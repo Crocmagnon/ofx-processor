@@ -26,8 +26,6 @@ def cli(ofx_filename):
 
     for transaction in ofx.statements[0].transactions:
         if "CB****" in transaction.name:
-            click.secho("Edited transaction {}".format(transaction.checknum), fg="blue")
-
             name = transaction.name
             memo = transaction.memo
             conversion = re.compile(r"\d+,\d{2}[a-zA-Z]{3}")
@@ -38,6 +36,13 @@ def cli(ofx_filename):
             else:
                 transaction.name = memo
                 transaction.memo = name
+
+            click.secho(
+                "Edited transaction {} ({})".format(
+                    transaction.checknum, transaction.name
+                ),
+                fg="blue",
+            )
 
     header = str(make_header(version=102))
     root = ofx.to_etree()
