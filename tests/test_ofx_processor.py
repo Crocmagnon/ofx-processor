@@ -1,4 +1,4 @@
-from ofx_processor import __version__
+from ofx_processor.bpvf_processor import __version__
 
 
 def test_version():
