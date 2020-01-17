@@ -13,8 +13,23 @@ def process_amount(amount):
 
 def process_memo(line):
     return " - ".join(
-        filter(None, map(str.strip, [line["Category"], line["Exchange Rate"]]))
+        filter(
+            None,
+            map(str.strip, [line.get("Category", ""), line.get("Exchange Rate", "")]),
+        )
     )
+
+
+def process_date(line):
+    return dateparser.parse(line.get("Completed Date")).strftime("%Y-%m-%d")
+
+
+def process_inflow(line):
+    return process_amount(line.get("Paid In (EUR)"))
+
+
+def process_outflow(line):
+    return process_amount(line.get("Paid Out (EUR)"))
 
 
 @click.command()
@@ -25,14 +40,13 @@ def cli(csv_filename):
     with open(csv_filename) as f:
         reader = csv.DictReader(f, delimiter=";")
         for line in reader:
-            date = dateparser.parse(line["Completed Date"])
             formatted_data.append(
                 {
-                    "Date": date.strftime("%Y-%m-%d"),
+                    "Date": process_date(line),
                     "Payee": line["Reference"],
                     "Memo": process_memo(line),
-                    "Outflow": process_amount(line["Paid Out (EUR)"]),
-                    "Inflow": process_amount(line["Paid In (EUR)"]),
+                    "Outflow": process_outflow(line),
+                    "Inflow": process_inflow(line),
                 }
             )
 
