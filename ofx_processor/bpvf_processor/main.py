@@ -8,6 +8,26 @@ from ofxtools.Parser import OFXTree
 from ofxtools.header import make_header
 
 
+def _process_name_and_memo(name, memo):
+    if "CB****" in name:
+        conversion = re.compile(r"\d+,\d{2}[a-zA-Z]{3}")
+        match = conversion.search(memo)
+        if match:
+            res_name = memo[: match.start() - 1]
+            res_memo = name + memo[match.start() - 1 :]
+        else:
+            res_name = memo
+            res_memo = name
+
+        return res_name, res_memo, True
+
+    return name, memo, False
+
+
+def process_name_and_memo(transaction):
+    return _process_name_and_memo(transaction.name, transaction.memo)
+
+
 @click.command()
 @click.argument("ofx_filename")
 def cli(ofx_filename):
@@ -25,18 +45,9 @@ def cli(ofx_filename):
         sys.exit(1)
 
     for transaction in ofx.statements[0].transactions:
-        if "CB****" in transaction.name:
-            name = transaction.name
-            memo = transaction.memo
-            conversion = re.compile(r"\d+,\d{2}[a-zA-Z]{3}")
-            match = conversion.search(memo)
-            if match:
-                transaction.name = memo[: match.start() - 1]
-                transaction.memo = name + memo[match.start() - 1 :]
-            else:
-                transaction.name = memo
-                transaction.memo = name
+        transaction.name, transaction.memo, edited = process_name_and_memo(transaction)
 
+        if edited:
             click.secho(
                 "Edited transaction {} ({})".format(
                     transaction.checknum, transaction.name
