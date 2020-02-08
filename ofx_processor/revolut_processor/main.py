@@ -1,5 +1,6 @@
 import csv
 import os
+from collections import defaultdict
 
 import click
 import dateparser
@@ -34,34 +35,64 @@ def process_outflow(line):
 
 @click.command()
 @click.argument("csv_filename")
-def cli(csv_filename):
+@click.option(
+    "--ynab/--file-only",
+    default=False,
+    help="Push data directly to YNAB instead of just writing a file.",
+)
+def cli(csv_filename, ynab):
     formatted_data = []
+    ynab_transactions = []
+    transaction_ids = defaultdict(int)
 
     with open(csv_filename) as f:
         reader = csv.DictReader(f, delimiter=";")
         for line in reader:
+            date = process_date(line)
+            payee = line["Reference"]
+            memo = process_memo(line)
+            outflow = process_outflow(line)
+            inflow = process_inflow(line)
             formatted_data.append(
                 {
-                    "Date": process_date(line),
-                    "Payee": line["Reference"],
-                    "Memo": process_memo(line),
-                    "Outflow": process_outflow(line),
-                    "Inflow": process_inflow(line),
+                    "Date": date,
+                    "Payee": payee,
+                    "Memo": memo,
+                    "Outflow": outflow,
+                    "Inflow": inflow,
+                }
+            )
+            amount = outflow if outflow else inflow
+            amount *= 1000
+            import_id = f"YNAB:{amount}:{date}"
+            transaction_ids[import_id] += 1
+            occurrence = transaction_ids[import_id]
+            import_id = f"{import_id}:{occurrence}"
+            ynab_transactions.append(
+                {
+                    "date": date,
+                    "amount": amount,
+                    "payee_name": payee,
+                    "memo": memo,
+                    "import_id": import_id,
                 }
             )
 
-    if not formatted_data:
+    if formatted_data:
+        processed_file = os.path.join(os.path.dirname(csv_filename), "processed.csv")
+        with open(processed_file, "w") as f:
+            writer = csv.DictWriter(
+                f, delimiter=",", quotechar='"', fieldnames=formatted_data[0].keys()
+            )
+            writer.writeheader()
+            writer.writerows(formatted_data)
+
+            click.secho("{} written".format(processed_file), fg="green")
+    else:
         click.secho("Nothing to write.")
 
-    processed_file = os.path.join(os.path.dirname(csv_filename), "processed.csv")
-    with open(processed_file, "w") as f:
-        writer = csv.DictWriter(
-            f, delimiter=",", quotechar='"', fieldnames=formatted_data[0].keys()
-        )
-        writer.writeheader()
-        writer.writerows(formatted_data)
-
-        click.secho("{} written".format(processed_file), fg="green")
+    if ynab and ynab_transactions:
+        ynab.push_transactions(ynab_transactions, "revolut")
 
 
 if __name__ == "__main__":
