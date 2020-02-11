@@ -5,6 +5,8 @@ from collections import defaultdict
 import click
 import dateparser
 
+from ofx_processor.utils import ynab
+
 
 def process_amount(amount):
     if amount:
@@ -40,7 +42,7 @@ def process_outflow(line):
     default=False,
     help="Push data directly to YNAB instead of just writing a file.",
 )
-def cli(csv_filename, ynab):
+def cli(csv_filename, push_to_ynab):
     formatted_data = []
     ynab_transactions = []
     transaction_ids = defaultdict(int)
@@ -91,7 +93,7 @@ def cli(csv_filename, ynab):
     else:
         click.secho("Nothing to write.")
 
-    if ynab and ynab_transactions:
+    if push_to_ynab and ynab_transactions:
         ynab.push_transactions(ynab_transactions, "revolut")
 
 
