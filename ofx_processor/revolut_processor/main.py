@@ -38,11 +38,20 @@ def process_outflow(line):
 @click.command()
 @click.argument("csv_filename")
 @click.option(
-    "--ynab/--file-only",
-    default=False,
-    help="Push data directly to YNAB instead of just writing a file.",
+    "--ynab/--no-ynab",
+    "push_to_ynab",
+    default=True,
+    help="Push data directly to YNAB.",
+    show_default=True,
 )
-def cli(csv_filename, push_to_ynab):
+@click.option(
+    "--file/--no-file",
+    "output_file",
+    default=False,
+    help="Write a processed file.",
+    show_default=True,
+)
+def cli(csv_filename, push_to_ynab, output_file):
     formatted_data = []
     ynab_transactions = []
     transaction_ids = defaultdict(int)
@@ -80,7 +89,7 @@ def cli(csv_filename, push_to_ynab):
                 }
             )
 
-    if formatted_data:
+    if output_file and formatted_data:
         processed_file = os.path.join(os.path.dirname(csv_filename), "processed.csv")
         with open(processed_file, "w") as f:
             writer = csv.DictWriter(

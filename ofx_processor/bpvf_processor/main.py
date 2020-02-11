@@ -34,12 +34,20 @@ def process_name_and_memo(transaction):
 @click.command()
 @click.argument("ofx_filename")
 @click.option(
-    "--ynab/--file-only",
+    "--ynab/--no-ynab",
     "push_to_ynab",
-    default=False,
-    help="Push data directly to YNAB instead of just writing a file.",
+    default=True,
+    help="Push data directly to YNAB.",
+    show_default=True,
 )
-def cli(ofx_filename, push_to_ynab):
+@click.option(
+    "--file/--no-file",
+    "output_file",
+    default=False,
+    help="Write a processed file.",
+    show_default=True,
+)
+def cli(ofx_filename, push_to_ynab, output_file):
     parser = OFXTree()
     try:
         parser.parse(ofx_filename)
@@ -85,13 +93,14 @@ def cli(ofx_filename, push_to_ynab):
         )
     click.secho(f"Processed {len(ynab_transactions)} transactions total.", fg="blue")
 
-    header = str(make_header(version=102))
-    root = ofx.to_etree()
-    data = ElementTree.tostring(root).decode()
-    processed_file = os.path.join(os.path.dirname(ofx_filename), "processed.ofx")
-    with open(processed_file, "w") as f:
-        f.write(header + data)
-        click.secho("{} written".format(processed_file), fg="green")
+    if output_file:
+        header = str(make_header(version=102))
+        root = ofx.to_etree()
+        data = ElementTree.tostring(root).decode()
+        processed_file = os.path.join(os.path.dirname(ofx_filename), "processed.ofx")
+        with open(processed_file, "w") as f:
+            f.write(header + data)
+            click.secho("{} written".format(processed_file), fg="green")
 
     if push_to_ynab:
         ynab.push_transactions(ynab_transactions, "bpvf")
