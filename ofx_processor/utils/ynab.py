@@ -39,15 +39,23 @@ def push_transactions(transactions, account):
     url = f"{BASE_URL}/budgets/{budget_id}/transactions"
     for transaction in transactions:
         transaction["account_id"] = section["account"]
+
     data = {"transactions": transactions}
     token = section["token"]
     headers = {"Authorization": f"Bearer {token}"}
+
     res = requests.post(url, json=data, headers=headers)
     res.raise_for_status()
     data = res.json()["data"]
-    created = data["transactions"]
-    duplicates = data["duplicate_import_ids"]
+
+    created = set()
+    for transaction in data["transactions"]:
+        matched_id = transaction["matched_transaction_id"]
+        if not matched_id or matched_id not in created:
+            created.add(transaction["id"])
     click.secho(f"{len(created)} transactions created in YNAB.", fg="green", bold=True)
+
+    duplicates = data["duplicate_import_ids"]
     if duplicates:
         click.secho(
             f"{len(duplicates)} transactions ignored (duplicates).", fg="yellow"
