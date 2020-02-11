@@ -102,7 +102,7 @@ def cli(ofx_filename, push_to_ynab, output_file):
             f.write(header + data)
             click.secho("{} written".format(processed_file), fg="green")
 
-    if push_to_ynab:
+    if push_to_ynab and ynab_transactions:
         ynab.push_transactions(ynab_transactions, "bpvf")
 
 
