@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ofx-processor"
-version = "0.4.1"
+version = "0.4.2"
 description = "Personal ofx processor"
 readme = "README.md"
 license = "GPL-3.0-or-later"

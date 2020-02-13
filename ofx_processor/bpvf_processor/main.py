@@ -32,6 +32,7 @@ def process_name_and_memo(transaction):
 
 
 @click.command()
+@click.version_option()
 @click.argument("ofx_filename")
 @click.option(
     "--ynab/--no-ynab",

@@ -36,6 +36,7 @@ def process_outflow(line):
 
 
 @click.command()
+@click.version_option()
 @click.argument("csv_filename")
 @click.option(
     "--ynab/--no-ynab",
