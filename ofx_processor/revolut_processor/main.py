@@ -73,8 +73,8 @@ def cli(csv_filename, push_to_ynab, output_file):
                     "Inflow": inflow,
                 }
             )
-            amount = outflow if outflow else inflow
-            amount *= 1000
+            amount = -outflow if outflow else inflow
+            amount = int(amount * 1000)
             import_id = f"YNAB:{amount}:{date}"
             transaction_ids[import_id] += 1
             occurrence = transaction_ids[import_id]
@@ -88,6 +88,7 @@ def cli(csv_filename, push_to_ynab, output_file):
                     "import_id": import_id,
                 }
             )
+    click.secho(f"Processed {len(ynab_transactions)} transactions total.", fg="blue")
 
     if output_file and formatted_data:
         processed_file = os.path.join(os.path.dirname(csv_filename), "processed.csv")
@@ -99,8 +100,6 @@ def cli(csv_filename, push_to_ynab, output_file):
             writer.writerows(formatted_data)
 
             click.secho("{} written".format(processed_file), fg="green")
-    else:
-        click.secho("Nothing to write.")
 
     if push_to_ynab and ynab_transactions:
         ynab.push_transactions(ynab_transactions, "revolut")
