@@ -1,5 +1,9 @@
 from collections import defaultdict
 
+import click
+
+from ofx_processor.utils import ynab
+
 
 class Line:
     data = None
@@ -41,9 +45,19 @@ class Line:
 class Processor:
     transaction_ids = defaultdict(int)
     line_class = Line
+    account_name = None
 
-    def __init__(self, iterable):
-        self.iterable = iterable
+    def __init__(self, filename):
+        self.filename = filename
+        self.iterable = self.parse_file()
+
+    def parse_file(self):
+        return []
+
+    def push_to_ynab(self):
+        transactions = self.get_transactions()
+        click.secho(f"Processed {len(transactions)} transactions total.", fg="blue")
+        ynab.push_transactions(transactions, account=self.account_name)
 
     def get_transactions(self):
         return list(map(self._get_transaction, self.iterable))

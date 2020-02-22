@@ -17,6 +17,7 @@ def get_default_config():
     }
     default_config["bpvf"] = {"account": "<YOUR ACCOUNT ID>"}
     default_config["revolut"] = {"account": "<YOUR ACCOUNT ID>"}
+    default_config["ce"] = {"account": "<YOUR ACCOUNT ID>"}
 
     return default_config
 

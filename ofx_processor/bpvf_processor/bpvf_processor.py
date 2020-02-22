@@ -1,4 +1,8 @@
 import re
+import sys
+
+import click
+from ofxtools import OFXTree
 
 from ofx_processor.utils.processor import Processor, Line
 
@@ -38,3 +42,20 @@ class BpvfLine(Line):
 
 class BpvfProcessor(Processor):
     line_class = BpvfLine
+    account_name = "bpvf"
+
+    def parse_file(self):
+        parser = OFXTree()
+        try:
+            parser.parse(self.filename)
+        except FileNotFoundError:
+            click.secho("Couldn't open ofx file", fg="red")
+            sys.exit(1)
+
+        ofx = parser.convert()
+
+        if ofx is None:
+            click.secho("Couldn't parse ofx file", fg="red")
+            sys.exit(1)
+
+        return ofx.statements[0].transactions

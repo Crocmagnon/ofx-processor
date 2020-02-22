@@ -1,3 +1,5 @@
+import csv
+
 import dateparser
 
 from ofx_processor.utils.processor import Processor, Line
@@ -46,3 +48,9 @@ class RevolutLine(Line):
 
 class RevolutProcessor(Processor):
     line_class = RevolutLine
+    account_name = "revolut"
+
+    def parse_file(self):
+        with open(self.filename) as f:
+            reader = csv.DictReader(f, delimiter=";")
+            return reader
