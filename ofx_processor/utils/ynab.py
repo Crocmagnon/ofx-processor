@@ -22,6 +22,9 @@ def get_default_config():
 
 
 def push_transactions(transactions, account):
+    if not transactions:
+        click.secho("No transaction, nothing to do.", fg="yellow")
+        return
     config = configparser.ConfigParser()
     config_file = os.path.join(DEFAULT_CONFIG_DIR, DEFAULT_CONFIG_FILENAME)
     if not os.path.isfile(config_file):

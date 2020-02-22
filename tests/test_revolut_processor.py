@@ -2,11 +2,11 @@ import datetime
 import unittest
 
 from ofx_processor.revolut_processor.main import (
-    process_amount,
+    _amount_str_to_float,
     process_memo,
     process_date,
-    process_inflow,
-    process_outflow,
+    _process_inflow,
+    _process_outflow,
 )
 
 
@@ -14,17 +14,17 @@ class RevolutProcessorTestCase(unittest.TestCase):
     def test_process_amount_with_one_decimal_place(self):
         amount = "3,4"
         expected = 3.4
-        self.assertEqual(process_amount(amount), expected)
+        self.assertEqual(_amount_str_to_float(amount), expected)
 
     def test_process_amount_with_two_decimal_places(self):
         amount = "3,41"
         expected = 3.41
-        self.assertEqual(process_amount(amount), expected)
+        self.assertEqual(_amount_str_to_float(amount), expected)
 
     def test_process_amount_with_empty_string(self):
         amount = ""
         expected = ""
-        self.assertEqual(process_amount(amount), expected)
+        self.assertEqual(_amount_str_to_float(amount), expected)
 
     def test_process_memo_with_category_and_rate(self):
         line = {"Category": "category name", "Exchange Rate": "exchange rate"}
@@ -60,12 +60,12 @@ class RevolutProcessorTestCase(unittest.TestCase):
     def test_process_inflow(self):
         line = {"Paid In (EUR)": "3,42"}
         expected = 3.42
-        self.assertEqual(process_inflow(line), expected)
+        self.assertEqual(_process_inflow(line), expected)
 
     def test_process_outflow(self):
         line = {"Paid Out (EUR)": "8,42"}
         expected = 8.42
-        self.assertEqual(process_outflow(line), expected)
+        self.assertEqual(_process_outflow(line), expected)
 
 
 if __name__ == "__main__":
