@@ -1,12 +1,9 @@
 import datetime
 import unittest
 
-from ofx_processor.revolut_processor.main import (
+from ofx_processor.revolut_processor.revolut_processor import (
     _amount_str_to_float,
-    process_memo,
-    process_date,
-    _process_inflow,
-    _process_outflow,
+    RevolutLine,
 )
 
 
@@ -29,43 +26,43 @@ class RevolutProcessorTestCase(unittest.TestCase):
     def test_process_memo_with_category_and_rate(self):
         line = {"Category": "category name", "Exchange Rate": "exchange rate"}
         expected = "category name - exchange rate"
-        self.assertEqual(process_memo(line), expected)
+        self.assertEqual(RevolutLine(line).get_memo(), expected)
 
     def test_process_memo_with_only_category(self):
         line = {"Category": "category name", "Exchange Rate": ""}
         expected = "category name"
-        self.assertEqual(process_memo(line), expected)
+        self.assertEqual(RevolutLine(line).get_memo(), expected)
 
     def test_process_memo_with_only_rate(self):
         line = {"Category": "", "Exchange Rate": "exchange rate"}
         expected = "exchange rate"
-        self.assertEqual(process_memo(line), expected)
+        self.assertEqual(RevolutLine(line).get_memo(), expected)
 
     def test_process_memo_with_missing_keys(self):
         line = {"Category": "category name"}
         expected = "category name"
-        self.assertEqual(process_memo(line), expected)
+        self.assertEqual(RevolutLine(line).get_memo(), expected)
 
     def test_process_date(self):
         line = {"Completed Date": "January 16"}
         current_year = datetime.date.today().year
         expected = f"{current_year}-01-16"
-        self.assertEqual(process_date(line), expected)
+        self.assertEqual(RevolutLine(line).get_date(), expected)
 
     def test_process_date_other_year(self):
         line = {"Completed Date": "January 16 2019"}
         expected = f"2019-01-16"
-        self.assertEqual(process_date(line), expected)
+        self.assertEqual(RevolutLine(line).get_date(), expected)
 
     def test_process_inflow(self):
         line = {"Paid In (EUR)": "3,42"}
         expected = 3.42
-        self.assertEqual(_process_inflow(line), expected)
+        self.assertEqual(RevolutLine(line)._process_inflow(), expected)
 
     def test_process_outflow(self):
         line = {"Paid Out (EUR)": "8,42"}
         expected = 8.42
-        self.assertEqual(_process_outflow(line), expected)
+        self.assertEqual(RevolutLine(line)._process_outflow(), expected)
 
 
 if __name__ == "__main__":
