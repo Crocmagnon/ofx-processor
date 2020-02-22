@@ -21,12 +21,31 @@ def get_default_config():
     return default_config
 
 
+def get_config_file_name():
+    config_file = os.path.join(DEFAULT_CONFIG_DIR, DEFAULT_CONFIG_FILENAME)
+    return config_file
+
+
+@click.group()
+def config():
+    pass
+
+
+@click.command()
+def edit_config():
+    config_file = get_config_file_name()
+    click.edit(filename=config_file)
+
+
+config.add_command(edit_config, "edit")
+
+
 def push_transactions(transactions, account):
     if not transactions:
         click.secho("No transaction, nothing to do.", fg="yellow")
         return
     config = configparser.ConfigParser()
-    config_file = os.path.join(DEFAULT_CONFIG_DIR, DEFAULT_CONFIG_FILENAME)
+    config_file = get_config_file_name()
     if not os.path.isfile(config_file):
         os.makedirs(DEFAULT_CONFIG_DIR, exist_ok=True)
         config = get_default_config()
@@ -56,7 +75,11 @@ def push_transactions(transactions, account):
         matched_id = transaction["matched_transaction_id"]
         if not matched_id or matched_id not in created:
             created.add(transaction["id"])
-    click.secho(f"{len(created)} transactions created in YNAB.", fg="green", bold=True)
+
+    if created:
+        click.secho(
+            f"{len(created)} transactions created in YNAB.", fg="green", bold=True
+        )
 
     duplicates = data["duplicate_import_ids"]
     if duplicates:
