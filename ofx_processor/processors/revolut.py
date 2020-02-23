@@ -1,5 +1,6 @@
 import csv
 
+import click
 import dateparser
 
 from ofx_processor.utils.processor import Processor, Line
@@ -54,3 +55,9 @@ class RevolutProcessor(Processor):
         with open(self.filename) as f:
             reader = csv.DictReader(f, delimiter=";")
             return reader
+
+    @staticmethod
+    @click.command("revolut", help="Process Revolut bank statement (CSV)")
+    @click.argument("csv_filename")
+    def main(csv_filename):
+        RevolutProcessor(csv_filename).push_to_ynab()

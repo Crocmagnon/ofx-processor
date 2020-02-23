@@ -59,3 +59,9 @@ class BpvfProcessor(Processor):
             sys.exit(1)
 
         return ofx.statements[0].transactions
+
+    @staticmethod
+    @click.command("bpvf", help="Process BPVF bank statement (OFX)")
+    @click.argument("ofx_filename")
+    def main(ofx_filename):
+        BpvfProcessor(ofx_filename).push_to_ynab()

@@ -1,7 +1,7 @@
 import datetime
 import unittest
 
-from ofx_processor.revolut_processor.revolut_processor import (
+from ofx_processor.processors.revolut import (
     _amount_str_to_float,
     RevolutLine,
 )

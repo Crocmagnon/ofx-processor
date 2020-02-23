@@ -3,34 +3,25 @@ import pkgutil
 
 import click
 
-import ofx_processor
+from ofx_processor import processors
 
 
 def discover_processors(cli: click.Group):
     """
-    Discover processors. To be discovered, CLIs need to match the following structure:
+    Discover processors.
 
-    ofx_processor
-    ├── __init__.py
-    └── <package_name>_processor
-        ├── __init__.py
-        ├── <module_name>_cli.py
-        └── <module_name>_processor.py
-
-    Preferably, package_name and module_name are the same, but there is no restriction.
-    Finally, a "main" function will be looked for inside the <module_name>_cli module.
-    This function must be a Click command with a unique name and will be added to the
-    main command line interface.
+    To be discovered, processors must:
+    * Be in the `processors` package.
+    * Declare a <BankName>Processor class
+    * Declare a static main function in this class,
+      which must be a click command
 
     :param cli: The main CLI to add discovered processors to.
     """
-    prefix = ofx_processor.__name__ + "."
-    for package in pkgutil.iter_modules(ofx_processor.__path__, prefix):
-        if package.name.endswith("_processor"):
-            module_prefix = package.name + "."
-            package = importlib.import_module(package.name)
-            for module in pkgutil.iter_modules(package.__path__, module_prefix):
-                if module.name.endswith("_cli"):
-                    module = importlib.import_module(module.name)
-                    if "main" in dir(module):
-                        cli.add_command(module.main)
+    prefix = processors.__name__ + "."
+    for module in pkgutil.iter_modules(processors.__path__, prefix):
+        module = importlib.import_module(module.name)
+        for item in dir(module):
+            if item.endswith("Processor") and item != "Processor":
+                cls = getattr(module, item)
+                cli.add_command(cls.main)

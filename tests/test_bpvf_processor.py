@@ -1,6 +1,6 @@
 import unittest
 
-from ofx_processor.bpvf_processor.bpvf_processor import _process_name_and_memo
+from ofx_processor.processors.bpvf import _process_name_and_memo
 
 
 class MyTestCase(unittest.TestCase):
