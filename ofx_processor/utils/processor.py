@@ -12,16 +12,16 @@ class Line:
         self.data = data
 
     def get_date(self):
-        pass
+        raise NotImplementedError  # pragma: nocover
 
     def get_amount(self):
-        pass
+        raise NotImplementedError  # pragma: nocover
 
     def get_memo(self):
-        pass
+        raise NotImplementedError  # pragma: nocover
 
     def get_payee(self):
-        pass
+        raise NotImplementedError  # pragma: nocover
 
     def to_ynab_transaction(self, transaction_ids):
         date = self.get_date()
