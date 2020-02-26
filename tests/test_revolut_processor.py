@@ -9,7 +9,7 @@ from ofx_processor.processors.revolut import (
 )
 
 
-class RevolutProcessorTestCase(unittest.TestCase):
+class RevolutLineTestCase(unittest.TestCase):
     def test_convert_amount_with_one_decimal_place(self):
         amount = "3,4"
         expected = 3.4
