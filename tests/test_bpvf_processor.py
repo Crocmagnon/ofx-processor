@@ -1,6 +1,6 @@
 import unittest
 
-from ofx_processor.processors.bpvf import _process_name_and_memo
+from ofx_processor.processors.bpvf import BpvfLine
 
 
 class MyTestCase(unittest.TestCase):
@@ -8,7 +8,7 @@ class MyTestCase(unittest.TestCase):
         name = "business"
         memo = "2020-01-17"
 
-        result_name, result_memo = _process_name_and_memo(name, memo)
+        result_name, result_memo = BpvfLine._process_name_and_memo(name, memo)
         self.assertEqual(result_name, name)
         self.assertEqual(result_memo, memo)
 
@@ -19,7 +19,7 @@ class MyTestCase(unittest.TestCase):
         expected_name = "GUY AND SONS   FR LYON"
         expected_memo = "150120 CB****5874 0,90EUR 1 EURO = 1,000000"
 
-        result_name, result_memo = _process_name_and_memo(name, memo)
+        result_name, result_memo = BpvfLine._process_name_and_memo(name, memo)
         self.assertEqual(result_name, expected_name)
         self.assertEqual(result_memo, expected_memo)
 
@@ -30,7 +30,7 @@ class MyTestCase(unittest.TestCase):
         expected_name = "Dott           75PARIS"
         expected_memo = "150120 CB****5874"
 
-        result_name, result_memo = _process_name_and_memo(name, memo)
+        result_name, result_memo = BpvfLine._process_name_and_memo(name, memo)
         self.assertEqual(result_name, expected_name)
         self.assertEqual(result_memo, expected_memo)
 
