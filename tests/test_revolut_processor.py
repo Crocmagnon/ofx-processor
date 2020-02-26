@@ -72,7 +72,7 @@ class RevolutProcessorTestCase(unittest.TestCase):
         self.assertEqual(RevolutLine(line).get_payee(), expected)
 
 
-class BpvfProcessorTestCase(unittest.TestCase):
+class RevolutProcessorTestCase(unittest.TestCase):
     def test_file_not_found(self):
         with self.assertRaises(SystemExit):
             RevolutProcessor("notfound.csv").get_transactions()
