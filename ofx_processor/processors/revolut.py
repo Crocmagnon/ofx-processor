@@ -54,7 +54,7 @@ class RevolutProcessor(Processor):
 
     def parse_file(self):
         try:
-            with open(self.filename) as f:
+            with open(self.filename, encoding="utf-8") as f:
                 reader = csv.DictReader(f, delimiter=";")
                 return [line for line in reader]
         except FileNotFoundError:
