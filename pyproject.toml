@@ -11,7 +11,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7"
+python = ">=3.7,<4"
 ofxtools = "^0.8.20"
 click = "^7.0"
 dateparser = "^0.7.2"
@@ -20,6 +20,7 @@ requests = "^2.22.0"
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 black = "^19.10b0"
+coverage = "^5.0.3"
 
 [tool.poetry.scripts]
 ynab = 'ofx_processor.main:cli'
