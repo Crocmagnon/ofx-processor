@@ -54,7 +54,7 @@ class RevolutProcessor(Processor):
     def parse_file(self):
         with open(self.filename) as f:
             reader = csv.DictReader(f, delimiter=";")
-            return reader
+            return [line for line in reader]
 
     @staticmethod
     @click.command("revolut", help="Process Revolut bank statement (CSV)")
