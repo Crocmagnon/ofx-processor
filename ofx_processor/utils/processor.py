@@ -52,7 +52,7 @@ class Processor:
         self.iterable = self.parse_file()
 
     def parse_file(self):
-        return []
+        return []  # pragma: nocover
 
     def push_to_ynab(self):
         transactions = self.get_transactions()

@@ -1,4 +1,5 @@
 import csv
+import sys
 
 import click
 import dateparser
@@ -52,9 +53,13 @@ class RevolutProcessor(Processor):
     account_name = "revolut"
 
     def parse_file(self):
-        with open(self.filename) as f:
-            reader = csv.DictReader(f, delimiter=";")
-            return [line for line in reader]
+        try:
+            with open(self.filename) as f:
+                reader = csv.DictReader(f, delimiter=";")
+                return [line for line in reader]
+        except FileNotFoundError:
+            click.secho("File not found", fg="red")
+            sys.exit(1)
 
     @staticmethod
     @click.command("revolut", help="Process Revolut bank statement (CSV)")

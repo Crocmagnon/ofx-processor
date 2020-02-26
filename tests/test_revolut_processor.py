@@ -1,9 +1,11 @@
 import datetime
+import json
 import unittest
 
 from ofx_processor.processors.revolut import (
     _amount_str_to_float,
     RevolutLine,
+    RevolutProcessor,
 )
 
 
@@ -68,6 +70,19 @@ class RevolutProcessorTestCase(unittest.TestCase):
         line = {"Reference": "Hello world"}
         expected = line["Reference"]
         self.assertEqual(RevolutLine(line).get_payee(), expected)
+
+
+class BpvfProcessorTestCase(unittest.TestCase):
+    def test_file_not_found(self):
+        with self.assertRaises(SystemExit):
+            RevolutProcessor("notfound.csv").get_transactions()
+
+    def test_file(self):
+        transactions = RevolutProcessor("tests/samples/revolut.csv").get_transactions()
+        with open("tests/samples/revolut_expected.json") as f:
+            expected_transactions = json.load(f)
+
+        self.assertListEqual(transactions, expected_transactions)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 import datetime
+import json
 import unittest
 
-from ofx_processor.processors.bpvf import BpvfLine
+from ofx_processor.processors.bpvf import BpvfLine, BpvfProcessor
 
 
 class BpvfTransaction:
@@ -22,7 +23,7 @@ class BpvfTransaction:
         self.name = name
 
 
-class BpvfProcessorTestCase(unittest.TestCase):
+class BpvfLineTestCase(unittest.TestCase):
     def test_process_name_and_memo_no_change(self):
         name = "business"
         memo = "2020-01-17"
@@ -82,6 +83,23 @@ class BpvfProcessorTestCase(unittest.TestCase):
 
         result_amount = BpvfLine(transaction).get_amount()
         self.assertEqual(result_amount, expected_amount)
+
+
+class BpvfProcessorTestCase(unittest.TestCase):
+    def test_file_not_found(self):
+        with self.assertRaises(SystemExit):
+            BpvfProcessor("filenotfound.ofx").get_transactions()
+
+    def test_file(self):
+        transactions = BpvfProcessor("tests/samples/bpvf.ofx").get_transactions()
+        with open("tests/samples/bpvf_expected.json") as f:
+            expected_transactions = json.load(f)
+
+        self.assertListEqual(transactions, expected_transactions)
+
+    def test_file_malformed(self):
+        with self.assertRaises(SystemExit):
+            BpvfProcessor("tests/samples/bpvf_malformed.ofx")
 
 
 if __name__ == "__main__":
