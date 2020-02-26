@@ -71,4 +71,4 @@ class RevolutProcessorTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main()  # pragma: nocover
