@@ -32,7 +32,8 @@ jobs:
         poetry install
     - name: Test with pytest
       run: |
-        poetry run pytest --color=yes
+        poetry run coverage run --source=. -m pytest --color=yes
+        poetry run coverage report
 
   publish:
     name: Publish to PyPI
