@@ -2,9 +2,6 @@ name: Test & publish
 
 on:
   push:
-    branches:
-      - master
-  pull_request:
   release:
     types: [created]
 
@@ -20,9 +17,9 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v1.1.1
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -32,8 +29,30 @@ jobs:
         poetry install
     - name: Test with pytest
       run: |
-        poetry run coverage run --source=. -m pytest --color=yes
-        poetry run coverage report
+        poetry run coverage run --source=ofx_processor -m pytest --color=yes
+        poetry run coverage xml
+    - name: Coverage report upload
+      uses: actions/upload-artifact@v1
+      with:
+        name: coverage_${{ matrix.os }}_${{ matrix.python-version }}
+        path: coverage.xml
+
+  sonarCloudTrigger:
+    name: SonarCloud Trigger
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download coverage report
+      uses: actions/download-artifact@v1
+      with:
+        name: coverage_ubuntu-latest_3.8
+        path: coverage-reports
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@v1.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   publish:
     name: Publish to PyPI
@@ -41,9 +60,9 @@ jobs:
     needs: build
     if: github.event_name == 'release'
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v1.1.1
         with:
           python-version: '3.8'
       - name: Install dependencies
