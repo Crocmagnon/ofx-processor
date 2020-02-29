@@ -85,16 +85,5 @@ class RevolutProcessorTestCase(unittest.TestCase):
         self.assertListEqual(transactions, expected_transactions)
 
 
-# class RevolutEndToEndTestCase(unittest.TestCase):
-#     def test_data_sent_to_ynab(self):
-#         with open("tests/samples/config.ini") as config_file:
-#             config_content = config_file.read()
-#
-#         with mock.patch("__main__.open", mock.mock_open(read_data=config_content)) as m:
-#             pass
-#         print(config_content)
-#         self.assertTrue(False)
-
-
 if __name__ == "__main__":
     unittest.main()  # pragma: nocover

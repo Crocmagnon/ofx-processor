@@ -72,7 +72,7 @@ def push_transactions(transactions, account):
 
     created = set()
     for transaction in data["transactions"]:
-        matched_id = transaction["matched_transaction_id"]
+        matched_id = transaction.get("matched_transaction_id")
         if not matched_id or matched_id not in created:
             created.add(transaction["id"])
 
