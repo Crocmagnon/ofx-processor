@@ -29,7 +29,8 @@ def get_config_file_name():
 
 @click.group()
 def config():
-    pass
+    pass  # This function acts only as a group to collect other subcommands
+    # As such, it intentionally has no body
 
 
 @click.command()
