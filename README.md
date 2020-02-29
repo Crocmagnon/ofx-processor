@@ -39,3 +39,7 @@ All transactions will be pushed to YNAB. If this is your first time using the sc
 it will open a generated config file for you to fill up.
 
 The account and budget UUID are found in the YNAB url when using the web app.
+
+## Versions
+
+This project follows [Semantic Versioning](https://semver.org/). 
