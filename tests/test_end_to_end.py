@@ -7,6 +7,7 @@ from click.testing import CliRunner
 from ofx_processor.processors.bpvf import BpvfProcessor
 from ofx_processor.processors.ce import CeProcessor
 from ofx_processor.processors.revolut import RevolutProcessor
+from ofx_processor.utils import ynab
 from ofx_processor.utils.ynab import config
 
 
@@ -33,3 +34,20 @@ class UtilsTestCase(unittest.TestCase):
                 call(config, name="config"),
             ]
             add_command.assert_has_calls(calls, any_order=True)
+
+
+class ConfigEditTestCase(unittest.TestCase):
+    @mock.patch("click.edit")
+    def test_config_edit(self, edit):
+        config_dir = "tests/samples"
+        ynab.DEFAULT_CONFIG_DIR = config_dir
+        expected_filename = f"{config_dir}/config.ini"
+        runner = CliRunner()
+        from ofx_processor.main import cli
+
+        # This is run at import time and the cli module is already imported before this test
+        # so we need to re-run the add_command to make it available.
+        cli.add_command(ynab.config, name="config")
+
+        runner.invoke(cli, ["config", "edit"])
+        edit.assert_called_once_with(filename=expected_filename)
