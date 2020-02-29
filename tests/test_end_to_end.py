@@ -1,4 +1,5 @@
 import json
+import os
 import unittest
 from unittest import mock
 from unittest.mock import call
@@ -49,12 +50,14 @@ class ConfigTestCase(unittest.TestCase):
         self.cli = cli
 
     @mock.patch("click.edit")
-    @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", "tests/samples")
+    @mock.patch(
+        "ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", os.path.join("tests", "samples")
+    )
     def test_config_edit(self, edit):
         runner = CliRunner()
         runner.invoke(self.cli, ["config", "edit"])
 
-        expected_filename = f"tests/samples/config.ini"
+        expected_filename = os.path.join("tests", "samples", "config.ini")
         edit.assert_called_once_with(filename=expected_filename)
 
     @mock.patch("click.edit")
@@ -62,7 +65,9 @@ class ConfigTestCase(unittest.TestCase):
         "ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME",
         "config_broken_duplicate_key.ini",
     )
-    @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", "tests/samples")
+    @mock.patch(
+        "ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", os.path.join("tests", "samples")
+    )
     def test_broken_config_file(self, edit):
         broken_files = [
             "config_broken_duplicate_key.ini",
@@ -82,15 +87,20 @@ class ConfigTestCase(unittest.TestCase):
                 edit.assert_called_with(filename=expected_filename)
 
     @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME", "file.ini")
-    @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", "some/config/folder")
+    @mock.patch(
+        "ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR",
+        os.path.join("some", "config", "folder"),
+    )
     def test_get_config_file_name(self):
-        expected = "some/config/folder/file.ini"
+        expected = os.path.join("some", "config", "folder", "file.ini")
         self.assertEqual(ynab.get_config_file_name(), expected)
 
     @mock.patch("click.edit")
     @mock.patch("os.makedirs")
     @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME", "notfound.ini")
-    @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", "tests/samples")
+    @mock.patch(
+        "ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", os.path.join("tests", "samples")
+    )
     def test_missing_config_file(self, makedirs, edit):
         runner = CliRunner()
         with mock.patch("ofx_processor.utils.ynab.open", mock.mock_open()) as mock_file:
@@ -102,7 +112,9 @@ class ConfigTestCase(unittest.TestCase):
         edit.assert_called_once_with(filename=expected_filename)
 
 
-@mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", "tests/samples")
+@mock.patch(
+    "ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", os.path.join("tests", "samples")
+)
 class DataTestCase(unittest.TestCase):
     def setUp(self):
         from ofx_processor.main import cli
