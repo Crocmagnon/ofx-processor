@@ -1,5 +1,16 @@
 # ofx-processor
 
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=bugs)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=code_smells)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=coverage)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=ncloc)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=alert_status)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=security_rating)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=sqale_index)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
+    
 ## Usage
 
 ```shell script
