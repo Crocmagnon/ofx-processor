@@ -11,6 +11,11 @@ from ofx_processor.utils.ynab import config
 
 
 class UtilsTestCase(unittest.TestCase):
+    """
+    This class needs to run before any other that imports
+    ofx_processor.main.cli because it tests import time stuff.
+    """
+
     @staticmethod
     def test_discover_processors():
         ce_main = CeProcessor.main
@@ -28,7 +33,3 @@ class UtilsTestCase(unittest.TestCase):
                 call(config, name="config"),
             ]
             add_command.assert_has_calls(calls, any_order=True)
-
-
-if __name__ == "__main__":
-    unittest.main()  # pragma: nocover

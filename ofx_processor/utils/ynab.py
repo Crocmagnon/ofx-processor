@@ -33,13 +33,10 @@ def config():
     # As such, it intentionally has no body
 
 
-@click.command()
+@config.command("edit")
 def edit_config():
     config_file = get_config_file_name()
     click.edit(filename=config_file)
-
-
-config.add_command(edit_config, "edit")
 
 
 def push_transactions(transactions, account):
