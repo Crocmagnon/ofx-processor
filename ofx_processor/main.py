@@ -19,4 +19,4 @@ cli.add_command(ynab.config, name="config")
 discover_processors(cli)
 
 if __name__ == "__main__":
-    cli()
+    cli()  # pragma: nocover

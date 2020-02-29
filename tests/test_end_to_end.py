@@ -1,3 +1,4 @@
+import json
 import unittest
 from unittest import mock
 from unittest.mock import call
@@ -37,27 +38,72 @@ class UtilsTestCase(unittest.TestCase):
             add_command.assert_has_calls(calls, any_order=True)
 
 
-class ConfigEditTestCase(unittest.TestCase):
+class ConfigTestCase(unittest.TestCase):
     @mock.patch("click.edit")
+    @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", "tests/samples")
     def test_config_edit(self, edit):
-        config_dir = "tests/samples"
-        ynab.DEFAULT_CONFIG_DIR = config_dir
-        expected_filename = f"{config_dir}/config.ini"
-        runner = CliRunner()
         from ofx_processor.main import cli
 
         # This is run at import time and the cli module is already imported before this test
         # so we need to re-run the add_command to make it available.
         cli.add_command(ynab.config, name="config")
 
+        runner = CliRunner()
         runner.invoke(cli, ["config", "edit"])
+
+        expected_filename = f"tests/samples/config.ini"
+        edit.assert_called_once_with(filename=expected_filename)
+
+    @mock.patch("click.edit")
+    @mock.patch(
+        "ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME",
+        "config_broken_duplicate_key.ini",
+    )
+    @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", "tests/samples")
+    def test_broken_config_file(self, edit):
+        from ofx_processor.main import cli
+
+        # This is run at import time and the cli module is already imported before this test
+        # so we need to re-run the add_command to make it available.
+        utils.discover_processors(cli)
+
+        runner = CliRunner()
+        result = runner.invoke(cli, ["revolut", "tests/samples/revolut.csv"])
+
+        expected_filename = "tests/samples/config_broken_duplicate_key.ini"
+        self.assertIn("Error while parsing config file", result.output)
+        edit.assert_called_once_with(filename=expected_filename)
+
+    @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME", "file.ini")
+    @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", "some/config/folder")
+    def test_get_config_file_name(self):
+        expected = "some/config/folder/file.ini"
+        self.assertEqual(ynab.get_config_file_name(), expected)
+
+    @mock.patch("click.edit")
+    @mock.patch("os.makedirs")
+    @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME", "notfound.ini")
+    @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", "tests/samples")
+    def test_missing_config_file(self, makedirs, edit):
+        from ofx_processor.main import cli
+
+        # This is run at import time and the cli module is already imported before this test
+        # so we need to re-run the add_command to make it available.
+        utils.discover_processors(cli)
+        runner = CliRunner()
+        with mock.patch("ofx_processor.utils.ynab.open", mock.mock_open()) as mock_file:
+            result = runner.invoke(cli, ["revolut", "tests/samples/revolut.csv"])
+            mock_file.assert_called_once()
+        makedirs.assert_called_once_with(ynab.DEFAULT_CONFIG_DIR, exist_ok=True)
+        self.assertIn("Editing config file", result.output)
+        expected_filename = ynab.get_config_file_name()
         edit.assert_called_once_with(filename=expected_filename)
 
 
+@mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", "tests/samples")
 class DataTestCase(unittest.TestCase):
     @mock.patch("requests.post")
     def test_revolut_sends_data_only_created(self, post):
-        ynab.DEFAULT_CONFIG_DIR = "tests/samples"
         post.return_value.json.return_value = {
             "data": {
                 "transactions": [
@@ -104,7 +150,6 @@ class DataTestCase(unittest.TestCase):
 
     @mock.patch("requests.post")
     def test_revolut_sends_data_some_created_some_duplicates(self, post):
-        ynab.DEFAULT_CONFIG_DIR = "tests/samples"
         post.return_value.json.return_value = {
             "data": {
                 "transactions": [
@@ -152,7 +197,6 @@ class DataTestCase(unittest.TestCase):
 
     @mock.patch("requests.post")
     def test_revolut_sends_data_only_duplicates(self, post):
-        ynab.DEFAULT_CONFIG_DIR = "tests/samples"
         post.return_value.json.return_value = {
             "data": {
                 "transactions": [],
@@ -182,3 +226,45 @@ class DataTestCase(unittest.TestCase):
         self.assertIn("Processed 9 transactions total.", result.output)
         self.assertNotIn("transactions created in YNAB.", result.output)
         self.assertIn("9 transactions ignored (duplicates).", result.output)
+
+    @mock.patch("requests.post")
+    def test_bpvf_sends_to_ynab(self, post):
+        from ofx_processor.main import cli
+
+        # This is run at import time and the cli module is already imported before this test
+        # so we need to re-run the add_command to make it available.
+        utils.discover_processors(cli)
+
+        with open("tests/samples/bpvf_transactions.json", encoding="utf-8") as f:
+            expected_data = json.load(f)
+
+        expected_headers = {"Authorization": f"Bearer <YOUR API TOKEN>"}
+        expected_url = f"{ynab.BASE_URL}/budgets/<YOUR BUDGET ID>/transactions"
+
+        runner = CliRunner()
+        runner.invoke(cli, ["bpvf", "tests/samples/bpvf.ofx"])
+
+        post.assert_called_once_with(
+            expected_url, json=expected_data, headers=expected_headers
+        )
+
+    @mock.patch("requests.post")
+    def test_ce_sends_to_ynab(self, post):
+        from ofx_processor.main import cli
+
+        # This is run at import time and the cli module is already imported before this test
+        # so we need to re-run the add_command to make it available.
+        utils.discover_processors(cli)
+
+        with open("tests/samples/ce_transactions.json", encoding="utf-8") as f:
+            expected_data = json.load(f)
+
+        expected_headers = {"Authorization": f"Bearer <YOUR API TOKEN>"}
+        expected_url = f"{ynab.BASE_URL}/budgets/<YOUR BUDGET ID>/transactions"
+
+        runner = CliRunner()
+        runner.invoke(cli, ["ce", "tests/samples/ce.ofx"])
+
+        post.assert_called_once_with(
+            expected_url, json=expected_data, headers=expected_headers
+        )
