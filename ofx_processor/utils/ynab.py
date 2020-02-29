@@ -1,5 +1,6 @@
 import configparser
 import os
+import sys
 
 import click
 import requests
@@ -55,7 +56,15 @@ def push_transactions(transactions, account):
         click.pause()
         click.edit(filename=config_file)
 
-    config.read(config_file)
+    try:
+        config.read(config_file)
+    except configparser.Error as e:
+        click.secho(f"Error while parsing config file: {str(e)}", fg="red", bold=True)
+        click.secho("Opening the file...")
+        click.pause()
+        click.edit(filename=config_file)
+        click.secho("Exiting...", fg="red", bold=True)
+        sys.exit(1)
     section = config[account]
     budget_id = section["budget"]
     url = f"{BASE_URL}/budgets/{budget_id}/transactions"

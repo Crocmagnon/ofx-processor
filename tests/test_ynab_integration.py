@@ -12,7 +12,7 @@ class YNABIntegrationTestCase(unittest.TestCase):
 
         with open("tests/samples/revolut_expected.json", encoding="utf-8") as f:
             transactions = json.load(f)
-        with open("tests/samples/transactions.json", encoding="utf-8") as f:
+        with open("tests/samples/revolut_transactions.json", encoding="utf-8") as f:
             expected_data = json.load(f)
 
         expected_headers = {"Authorization": f"Bearer <YOUR API TOKEN>"}

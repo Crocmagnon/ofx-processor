@@ -54,11 +54,6 @@ class BpvfProcessor(Processor):
             sys.exit(1)
 
         ofx = parser.convert()
-
-        if ofx is None:
-            click.secho("Couldn't convert ofx file", fg="red")
-            sys.exit(1)
-
         return ofx.statements[0].transactions
 
     @staticmethod
