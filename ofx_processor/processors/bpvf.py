@@ -57,7 +57,8 @@ class BpvfProcessor(Processor):
         return ofx.statements[0].transactions
 
     @staticmethod
-    @click.command("bpvf", help="Process BPVF bank statement (OFX)")
+    @click.command("bpvf")
     @click.argument("ofx_filename")
     def main(ofx_filename):
+        """Import BPVF bank statement (OFX file)."""
         BpvfProcessor(ofx_filename).push_to_ynab()

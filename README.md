@@ -21,15 +21,18 @@
 ```shell script
 Usage: ynab [OPTIONS] COMMAND [ARGS]...
 
+  Import your data to YNAB with the processors listed below or manage your
+  config.
+
 Options:
   --version   Show the version and exit.
   -h, --help  Show this message and exit.
 
 Commands:
-  bpvf     Process BPVF bank statement (OFX)
-  ce       Process CE bank statement (OFX)
-  config
-  revolut  Process Revolut bank statement (CSV)
+  config   Manage configuration.
+  bpvf     Import BPVF bank statement (OFX file).
+  ce       Import CE bank statement (OFX file).
+  revolut  Import Revolut bank statement (CSV file).
 ```
 
 All transactions will be pushed to YNAB. If this is your first time using the script,

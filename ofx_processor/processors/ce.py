@@ -25,7 +25,8 @@ class CeProcessor(BpvfProcessor):
     line_class = CeLine
 
     @staticmethod
-    @click.command("ce", help="Process CE bank statement (OFX)")
+    @click.command("ce")
     @click.argument("ofx_filename")
     def main(ofx_filename):
+        """Import CE bank statement (OFX file)."""
         CeProcessor(ofx_filename).push_to_ynab()

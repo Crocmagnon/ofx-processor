@@ -30,9 +30,7 @@ def get_config_file_name():
 
 @click.group()
 def config():
-    """
-    Manage configuration with subcommands
-    """
+    """Manage configuration."""
 
 
 @config.command("edit")

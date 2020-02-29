@@ -62,7 +62,8 @@ class RevolutProcessor(Processor):
             sys.exit(1)
 
     @staticmethod
-    @click.command("revolut", help="Process Revolut bank statement (CSV)")
+    @click.command("revolut")
     @click.argument("csv_filename")
     def main(csv_filename):
+        """Import Revolut bank statement (CSV file)."""
         RevolutProcessor(csv_filename).push_to_ynab()

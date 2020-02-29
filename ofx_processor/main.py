@@ -1,12 +1,12 @@
 import click
 
 from ofx_processor.utils import ynab
-from ofx_processor.utils.utils import discover_processors
+from ofx_processor.utils.utils import discover_processors, OrderedGroup
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 
-@click.group(context_settings=CONTEXT_SETTINGS)
+@click.group(context_settings=CONTEXT_SETTINGS, cls=OrderedGroup)
 @click.version_option()
 def cli():
     """
