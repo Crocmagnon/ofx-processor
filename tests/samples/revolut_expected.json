@@ -1,1 +1,65 @@
-[{"date": "2020-01-29", "amount": -53630, "payee_name": "To Person 1", "memo": "Transfers", "import_id": "YNAB:-53630:2020-01-29:1"}, {"date": "2020-01-29", "amount": -900, "payee_name": "To Person 2", "memo": "Transfers", "import_id": "YNAB:-900:2020-01-29:1"}, {"date": "2020-01-29", "amount": 53630, "payee_name": "Refund from Company 2", "memo": "Shopping", "import_id": "YNAB:53630:2020-01-29:1"}, {"date": "2020-01-24", "amount": -8500, "payee_name": "To Person 3", "memo": "Transfers", "import_id": "YNAB:-8500:2020-01-24:1"}, {"date": "2020-01-16", "amount": -1400, "payee_name": "To Person 4", "memo": "Transfers", "import_id": "YNAB:-1400:2020-01-16:1"}, {"date": "2020-01-10", "amount": -2009, "payee_name": "To Person 5", "memo": "Transfers", "import_id": "YNAB:-2009:2020-01-10:1"}, {"date": "2020-01-10", "amount": -1210, "payee_name": "To Person 6", "memo": "Transfers", "import_id": "YNAB:-1210:2020-01-10:1"}, {"date": "2020-01-05", "amount": -123680, "payee_name": "Company 1", "memo": "Shopping - FX-rate \u20ac1\u2008=\u2008US$1,1158", "import_id": "YNAB:-123680:2020-01-05:1"}, {"date": "2020-01-04", "amount": 100000, "payee_name": "Top-up via Apple Pay", "memo": "General", "import_id": "YNAB:100000:2020-01-04:1"}]
+[
+  {
+    "date": "2020-01-29",
+    "amount": -53630,
+    "payee_name": "To Person 1",
+    "memo": "Transfers",
+    "import_id": "YNAB:-53630:2020-01-29:1"
+  },
+  {
+    "date": "2020-01-29",
+    "amount": -900,
+    "payee_name": "To Person 2",
+    "memo": "Transfers",
+    "import_id": "YNAB:-900:2020-01-29:1"
+  },
+  {
+    "date": "2020-01-29",
+    "amount": 53630,
+    "payee_name": "Refund from Company 2",
+    "memo": "Shopping",
+    "import_id": "YNAB:53630:2020-01-29:1"
+  },
+  {
+    "date": "2020-01-24",
+    "amount": -8500,
+    "payee_name": "To Person 3",
+    "memo": "Transfers",
+    "import_id": "YNAB:-8500:2020-01-24:1"
+  },
+  {
+    "date": "2020-01-16",
+    "amount": -1400,
+    "payee_name": "To Person 4",
+    "memo": "Transfers",
+    "import_id": "YNAB:-1400:2020-01-16:1"
+  },
+  {
+    "date": "2020-01-10",
+    "amount": -2009,
+    "payee_name": "To Person 5",
+    "memo": "Transfers",
+    "import_id": "YNAB:-2009:2020-01-10:1"
+  },
+  {
+    "date": "2020-01-10",
+    "amount": -1210,
+    "payee_name": "To Person 6",
+    "memo": "Transfers",
+    "import_id": "YNAB:-1210:2020-01-10:1"
+  },
+  {
+    "date": "2020-01-05",
+    "amount": -123680,
+    "payee_name": "Company 1",
+    "memo": "Shopping - FX-rate \u20ac1\u2008=\u2008US$1,1158",
+    "import_id": "YNAB:-123680:2020-01-05:1"
+  },
+  {
+    "date": "2020-01-04",
+    "amount": 100000,
+    "payee_name": "Top-up via Apple Pay",
+    "memo": "General",
+    "import_id": "YNAB:100000:2020-01-04:1"
+  }
+]

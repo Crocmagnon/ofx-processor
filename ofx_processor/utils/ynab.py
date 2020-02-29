@@ -29,16 +29,15 @@ def get_config_file_name():
 
 @click.group()
 def config():
-    pass
+    """
+    Manage configuration with subcommands
+    """
 
 
-@click.command()
+@config.command("edit")
 def edit_config():
     config_file = get_config_file_name()
     click.edit(filename=config_file)
-
-
-config.add_command(edit_config, "edit")
 
 
 def push_transactions(transactions, account):
@@ -73,7 +72,7 @@ def push_transactions(transactions, account):
 
     created = set()
     for transaction in data["transactions"]:
-        matched_id = transaction["matched_transaction_id"]
+        matched_id = transaction.get("matched_transaction_id")
         if not matched_id or matched_id not in created:
             created.add(transaction["id"])
 

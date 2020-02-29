@@ -9,7 +9,10 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.version_option()
 def cli():
-    pass
+    """
+    Import your data to YNAB with the processors listed below
+    or manage your config.
+    """
 
 
 cli.add_command(ynab.config, name="config")

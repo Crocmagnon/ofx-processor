@@ -43,13 +43,13 @@ class Line:
 
 
 class Processor:
-    transaction_ids = defaultdict(int)
     line_class = Line
     account_name = None
 
     def __init__(self, filename):
         self.filename = filename
         self.iterable = self.parse_file()
+        self.transaction_ids = defaultdict(int)
 
     def parse_file(self):
         return []  # pragma: nocover
