@@ -1,16 +1,21 @@
 # ofx-processor
 
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ofx-processor)
+![PyPI - Format](https://img.shields.io/pypi/format/ofx-processor)
+![PyPI - Status](https://img.shields.io/pypi/status/ofx-processor)
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/Crocmagnon/ofx-processor?include_prereleases)
+![License](https://img.shields.io/github/license/Crocmagnon/ofx-processor)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Crocmagnon/ofx-processor/Test%20&%20publish)
+![Sonar Coverage](https://img.shields.io/sonar/coverage/Crocmagnon_ofx-processor?server=https%3A%2F%2Fsonarcloud.io)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=bugs)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=code_smells)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=coverage)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=ncloc)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=alert_status)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=security_rating)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=Crocmagnon_ofx-processor&metric=sqale_index)](https://sonarcloud.io/dashboard?id=Crocmagnon_ofx-processor)
-    
+
+
 ## Usage
 
 ```shell script
