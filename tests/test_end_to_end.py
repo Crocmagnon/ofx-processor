@@ -64,12 +64,22 @@ class ConfigTestCase(unittest.TestCase):
     )
     @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", "tests/samples")
     def test_broken_config_file(self, edit):
-        runner = CliRunner()
-        result = runner.invoke(self.cli, ["revolut", "tests/samples/revolut.csv"])
-
-        expected_filename = "tests/samples/config_broken_duplicate_key.ini"
-        self.assertIn("Error while parsing config file", result.output)
-        edit.assert_called_once_with(filename=expected_filename)
+        broken_files = [
+            "config_broken_duplicate_key.ini",
+            "config_broken_missing_account.ini",
+            "config_broken_missing_account_key.ini",
+            "config_broken_missing_budget.ini",
+            "config_broken_missing_token.ini",
+        ]
+        for name in broken_files:
+            with mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME", name):
+                runner = CliRunner()
+                result = runner.invoke(
+                    self.cli, ["revolut", "tests/samples/revolut.csv"]
+                )
+                expected_filename = ynab.get_config_file_name()
+                self.assertIn("Error while parsing config file", result.output)
+                edit.assert_called_with(filename=expected_filename)
 
     @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME", "file.ini")
     @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", "some/config/folder")

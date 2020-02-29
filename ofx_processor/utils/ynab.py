@@ -59,20 +59,21 @@ def push_transactions(transactions, account):
     try:
         config.read(config_file)
     except configparser.Error as e:
-        click.secho(f"Error while parsing config file: {str(e)}", fg="red", bold=True)
-        click.secho("Opening the file...")
-        click.pause()
-        click.edit(filename=config_file)
-        click.secho("Exiting...", fg="red", bold=True)
-        sys.exit(1)
-    section = config[account]
-    budget_id = section["budget"]
+        return handle_config_file_error(config_file, e)
+
+    try:
+        section = config[account]
+        budget_id = section["budget"]
+        token = section["token"]
+        account = section["account"]
+    except KeyError as e:
+        return handle_config_file_error(config_file, e)
+
     url = f"{BASE_URL}/budgets/{budget_id}/transactions"
     for transaction in transactions:
-        transaction["account_id"] = section["account"]
+        transaction["account_id"] = account
 
     data = {"transactions": transactions}
-    token = section["token"]
     headers = {"Authorization": f"Bearer {token}"}
 
     res = requests.post(url, json=data, headers=headers)
@@ -95,3 +96,12 @@ def push_transactions(transactions, account):
         click.secho(
             f"{len(duplicates)} transactions ignored (duplicates).", fg="yellow"
         )
+
+
+def handle_config_file_error(config_file, e):
+    click.secho(f"Error while parsing config file: {str(e)}", fg="red", bold=True)
+    click.secho("Opening the file...")
+    click.pause()
+    click.edit(filename=config_file)
+    click.secho("Exiting...", fg="red", bold=True)
+    sys.exit(1)
