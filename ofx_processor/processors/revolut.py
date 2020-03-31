@@ -4,7 +4,7 @@ import sys
 import click
 import dateparser
 
-from ofx_processor.utils.processor import Processor, Line
+from ofx_processor.utils.base_processor import BaseProcessor, BaseLine
 
 
 def _amount_str_to_float(amount):
@@ -13,10 +13,7 @@ def _amount_str_to_float(amount):
     return ""
 
 
-class RevolutLine(Line):
-    def __init__(self, data: dict = None):
-        super(RevolutLine, self).__init__(data)
-
+class RevolutLine(BaseLine):
     def _process_inflow(self):
         return _amount_str_to_float(self.data.get("Paid In (EUR)"))
 
@@ -48,7 +45,7 @@ class RevolutLine(Line):
         return self.data.get("Reference")
 
 
-class RevolutProcessor(Processor):
+class RevolutProcessor(BaseProcessor):
     line_class = RevolutLine
     account_name = "revolut"
 

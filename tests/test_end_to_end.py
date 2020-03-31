@@ -8,6 +8,7 @@ from click.testing import CliRunner
 
 from ofx_processor.processors.bpvf import BpvfProcessor
 from ofx_processor.processors.ce import CeProcessor
+from ofx_processor.processors.lcl import LclProcessor
 from ofx_processor.processors.revolut import RevolutProcessor
 from ofx_processor.utils import utils
 from ofx_processor.utils import ynab
@@ -25,6 +26,7 @@ class UtilsTestCase(unittest.TestCase):
         ce_main = CeProcessor.main
         bpvf_main = BpvfProcessor.main
         revolut_main = RevolutProcessor.main
+        lcl_main = LclProcessor.main
         runner = CliRunner()
         with mock.patch("click.core.Group.add_command") as add_command:
             from ofx_processor.main import cli
@@ -34,6 +36,7 @@ class UtilsTestCase(unittest.TestCase):
                 call(ce_main),
                 call(bpvf_main),
                 call(revolut_main),
+                call(lcl_main),
                 call(config, name="config"),
             ]
             add_command.assert_has_calls(calls, any_order=True)
@@ -260,6 +263,21 @@ class DataTestCase(unittest.TestCase):
 
         runner = CliRunner()
         runner.invoke(self.cli, ["ce", "tests/samples/ce.ofx"])
+
+        post.assert_called_once_with(
+            expected_url, json=expected_data, headers=expected_headers
+        )
+
+    @mock.patch("requests.post")
+    def test_lcl_sends_to_ynab(self, post):
+        with open("tests/samples/lcl_transactions.json", encoding="utf-8") as f:
+            expected_data = json.load(f)
+
+        expected_headers = {"Authorization": f"Bearer <YOUR API TOKEN>"}
+        expected_url = f"{ynab.BASE_URL}/budgets/<YOUR BUDGET ID>/transactions"
+
+        runner = CliRunner()
+        runner.invoke(self.cli, ["lcl", "tests/samples/lcl.ofx"])
 
         post.assert_called_once_with(
             expected_url, json=expected_data, headers=expected_headers

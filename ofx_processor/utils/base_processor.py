@@ -5,7 +5,7 @@ import click
 from ofx_processor.utils import ynab
 
 
-class Line:
+class BaseLine:
     data = None
 
     def __init__(self, data=None):
@@ -42,8 +42,8 @@ class Line:
         return ynab_transaction
 
 
-class Processor:
-    line_class = Line
+class BaseProcessor:
+    line_class = BaseLine
     account_name = None
 
     def __init__(self, filename):

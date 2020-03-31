@@ -1,23 +1,11 @@
 import re
-import sys
 
 import click
-from ofxtools import OFXTree
-from ofxtools.header import OFXHeaderError
 
-from ofx_processor.utils.processor import Processor, Line
+from ofx_processor.utils.base_ofx import OfxBaseLine, OfxBaseProcessor
 
 
-class BpvfLine(Line):
-    def __init__(self, data=None):
-        super(BpvfLine, self).__init__(data)
-
-    def get_date(self):
-        return self.data.dtposted.isoformat().split("T")[0]
-
-    def get_amount(self):
-        return int(self.data.trnamt * 1000)
-
+class BpvfLine(OfxBaseLine):
     def get_memo(self):
         return self._process_name_and_memo(self.data.name, self.data.memo)[1]
 
@@ -41,20 +29,9 @@ class BpvfLine(Line):
         return name, memo
 
 
-class BpvfProcessor(Processor):
+class BpvfProcessor(OfxBaseProcessor):
     line_class = BpvfLine
     account_name = "bpvf"
-
-    def parse_file(self):
-        parser = OFXTree()
-        try:
-            parser.parse(self.filename)
-        except (FileNotFoundError, OFXHeaderError):
-            click.secho("Couldn't open or parse ofx file", fg="red")
-            sys.exit(1)
-
-        ofx = parser.convert()
-        return ofx.statements[0].transactions
 
     @staticmethod
     @click.command("bpvf")

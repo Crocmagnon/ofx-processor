@@ -23,7 +23,11 @@ def discover_processors(cli: click.Group):
     for module in pkgutil.iter_modules(processors.__path__, prefix):
         module = importlib.import_module(module.name)
         for item in dir(module):
-            if item.endswith("Processor") and item != "Processor":
+            if (
+                item.endswith("Processor")
+                and item != "Processor"
+                and "Base" not in item
+            ):
                 cls = getattr(module, item)
                 cli.add_command(cls.main)
 

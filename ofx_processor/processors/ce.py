@@ -2,10 +2,16 @@ import re
 
 import click
 
-from ofx_processor.processors.bpvf import BpvfProcessor, BpvfLine
+from ofx_processor.utils.base_ofx import OfxBaseProcessor, OfxBaseLine
 
 
-class CeLine(BpvfLine):
+class CeLine(OfxBaseLine):
+    def get_memo(self):
+        return self._process_name_and_memo(self.data.name, self.data.memo)[1]
+
+    def get_payee(self):
+        return self._process_name_and_memo(self.data.name, self.data.memo)[0]
+
     @staticmethod
     def _process_name_and_memo(name: str, memo: str):
         name = name.strip()
@@ -20,7 +26,7 @@ class CeLine(BpvfLine):
         return res_name, res_memo
 
 
-class CeProcessor(BpvfProcessor):
+class CeProcessor(OfxBaseProcessor):
     account_name = "ce"
     line_class = CeLine
 
