@@ -5,6 +5,13 @@ description = "Personal ofx processor"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 authors = ["Gabriel Augendre <gabriel@augendre.info>"]
+homepage = "github.com/Crocmagnon/ofx-processor/"
+repository = "github.com/Crocmagnon/ofx-processor/"
+keywords = [
+    "ynab",
+    "finances",
+    "finance automation",
+]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
