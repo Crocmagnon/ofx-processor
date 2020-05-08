@@ -32,6 +32,7 @@ Commands:
   config   Manage configuration.
   bpvf     Import BPVF bank statement (OFX file).
   ce       Import CE bank statement (OFX file).
+  lcl      Import LCL bank statement (OFX file).
   revolut  Import Revolut bank statement (CSV file).
 ```
 
@@ -39,6 +40,8 @@ All transactions will be pushed to YNAB. If this is your first time using the sc
 it will open a generated config file for you to fill up.
 
 The account and budget UUID are found in the YNAB url when using the web app.
+
+The file passed in parameter will be deleted unless specified (`--keep` option on each import command)
 
 ## Versions
 
