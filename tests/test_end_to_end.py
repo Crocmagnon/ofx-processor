@@ -28,7 +28,7 @@ class UtilsTestCase(unittest.TestCase):
             runner.invoke(cli, ["--help"])
             add_command.assert_has_calls(calls, any_order=True)
             self.assertEqual(
-                set(map(lambda item: item.args[0].name, add_command.call_args_list)),
+                set(map(lambda call_: call_[0][0].name, add_command.call_args_list)),
                 set(expected_names),
             )
 
