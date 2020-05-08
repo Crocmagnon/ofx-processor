@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "ofx-processor"
-version = "2.0.1"
+version = "2.0.2"
 description = "Personal ofx processor"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 authors = ["Gabriel Augendre <gabriel@augendre.info>"]
-homepage = "github.com/Crocmagnon/ofx-processor/"
+homepage = "https://github.com/Crocmagnon/ofx-processor/"
 repository = "github.com/Crocmagnon/ofx-processor/"
 keywords = [
     "ynab",
