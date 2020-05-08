@@ -1,7 +1,5 @@
 import re
 
-import click
-
 from ofx_processor.utils.base_ofx import OfxBaseProcessor, OfxBaseLine
 
 
@@ -28,11 +26,10 @@ class CeLine(OfxBaseLine):
 
 class CeProcessor(OfxBaseProcessor):
     account_name = "ce"
+    command_name = "ce"
     line_class = CeLine
 
-    @staticmethod
-    @click.command("ce")
-    @click.argument("ofx_filename")
-    def main(ofx_filename):
-        """Import CE bank statement (OFX file)."""
-        CeProcessor(ofx_filename).push_to_ynab()
+
+def main(filename, keep):
+    """Import CE bank statement (OFX file)."""
+    CeProcessor(filename).push_to_ynab(keep)

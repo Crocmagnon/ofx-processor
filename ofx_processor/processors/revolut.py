@@ -48,6 +48,7 @@ class RevolutLine(BaseLine):
 class RevolutProcessor(BaseProcessor):
     line_class = RevolutLine
     account_name = "revolut"
+    command_name = "revolut"
 
     def parse_file(self):
         try:
@@ -58,9 +59,7 @@ class RevolutProcessor(BaseProcessor):
             click.secho("File not found", fg="red")
             sys.exit(1)
 
-    @staticmethod
-    @click.command("revolut")
-    @click.argument("csv_filename")
-    def main(csv_filename):
-        """Import Revolut bank statement (CSV file)."""
-        RevolutProcessor(csv_filename).push_to_ynab()
+
+def main(filename, keep):
+    """Import Revolut bank statement (CSV file)."""
+    RevolutProcessor(filename).push_to_ynab(keep)

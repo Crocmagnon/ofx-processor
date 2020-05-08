@@ -12,6 +12,7 @@ class LclLine(OfxBaseLine):
 class LclProcessor(OfxBaseProcessor):
     line_class = LclLine
     account_name = "lcl"
+    command_name = "lcl"
 
     def parse_file(self):
         # The first line of this file needs to be removed.
@@ -35,9 +36,7 @@ class LclProcessor(OfxBaseProcessor):
 
         return transactions
 
-    @staticmethod
-    @click.command("lcl")
-    @click.argument("ofx_filename")
-    def main(ofx_filename):
-        """Import LCL bank statement (OFX file)."""
-        LclProcessor(ofx_filename).push_to_ynab()
+
+def main(filename, keep):
+    """Import LCL bank statement (OFX file)."""
+    LclProcessor(filename).push_to_ynab(keep)

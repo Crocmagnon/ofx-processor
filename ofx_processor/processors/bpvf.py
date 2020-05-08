@@ -1,7 +1,5 @@
 import re
 
-import click
-
 from ofx_processor.utils.base_ofx import OfxBaseLine, OfxBaseProcessor
 
 
@@ -32,10 +30,9 @@ class BpvfLine(OfxBaseLine):
 class BpvfProcessor(OfxBaseProcessor):
     line_class = BpvfLine
     account_name = "bpvf"
+    command_name = "bpvf"
 
-    @staticmethod
-    @click.command("bpvf")
-    @click.argument("ofx_filename")
-    def main(ofx_filename):
-        """Import BPVF bank statement (OFX file)."""
-        BpvfProcessor(ofx_filename).push_to_ynab()
+
+def main(filename, keep):
+    """Import BPVF bank statement (OFX file)."""
+    BpvfProcessor(filename).push_to_ynab(keep)

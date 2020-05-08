@@ -14,8 +14,11 @@ def discover_processors(cli: click.Group):
     To be discovered, processors must:
     * Be in the `processors` package.
     * Declare a <BankName>Processor class
-    * Declare a static main function in this class,
-      which must be a click command
+    * Declare a main function in the module, outside of the class.
+      The main function must not be a click command, decorators will be added on the fly.
+      The main function must accept two parameters:
+      * filename: str, containing the name of the file to process, as passed on the command line
+      * keep: boolean, whether to keep the file after processing it or not
 
     :param cli: The main CLI to add discovered processors to.
     """
@@ -29,7 +32,25 @@ def discover_processors(cli: click.Group):
                 and "Base" not in item
             ):
                 cls = getattr(module, item)
-                cli.add_command(cls.main)
+                assert hasattr(
+                    module, "main"
+                ), "There must be a main function in the processor module."
+                assert hasattr(
+                    cls, "command_name"
+                ), "You must add a command_name member to your processor class."
+
+                # Apply default decorators
+                method = getattr(module, "main")
+                method = click.option(
+                    "--keep/--no-keep",
+                    help="Keep the file after processing it.",
+                    default=False,
+                    show_default=True,
+                )(method)
+                method = click.argument("filename")(method)
+                method = click.command(cls.command_name)(method)
+
+                cli.add_command(method)
 
 
 class OrderedGroup(click.Group):

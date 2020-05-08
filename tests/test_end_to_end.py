@@ -1,15 +1,12 @@
 import json
 import os
+import shutil
 import unittest
 from unittest import mock
 from unittest.mock import call
 
 from click.testing import CliRunner
 
-from ofx_processor.processors.bpvf import BpvfProcessor
-from ofx_processor.processors.ce import CeProcessor
-from ofx_processor.processors.lcl import LclProcessor
-from ofx_processor.processors.revolut import RevolutProcessor
 from ofx_processor.utils import utils
 from ofx_processor.utils import ynab
 from ofx_processor.utils.ynab import config
@@ -21,25 +18,19 @@ class UtilsTestCase(unittest.TestCase):
     ofx_processor.main.cli because it tests import time stuff.
     """
 
-    @staticmethod
-    def test_discover_processors():
-        ce_main = CeProcessor.main
-        bpvf_main = BpvfProcessor.main
-        revolut_main = RevolutProcessor.main
-        lcl_main = LclProcessor.main
+    def test_discover_processors(self):
+        expected_names = ["config", "bpvf", "lcl", "ce", "revolut"]
         runner = CliRunner()
         with mock.patch("click.core.Group.add_command") as add_command:
             from ofx_processor.main import cli
 
+            calls = [call(config, name="config")]
             runner.invoke(cli, ["--help"])
-            calls = [
-                call(ce_main),
-                call(bpvf_main),
-                call(revolut_main),
-                call(lcl_main),
-                call(config, name="config"),
-            ]
             add_command.assert_has_calls(calls, any_order=True)
+            self.assertEqual(
+                set(map(lambda item: item.args[0].name, add_command.call_args_list)),
+                set(expected_names),
+            )
 
 
 class ConfigTestCase(unittest.TestCase):
@@ -83,7 +74,7 @@ class ConfigTestCase(unittest.TestCase):
             with mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME", name):
                 runner = CliRunner()
                 result = runner.invoke(
-                    self.cli, ["revolut", "tests/samples/revolut.csv"]
+                    self.cli, ["revolut", "tests/samples/revolut.csv", "--keep"]
                 )
                 expected_filename = ynab.get_config_file_name()
                 self.assertIn("Error while parsing config file", result.output)
@@ -107,7 +98,9 @@ class ConfigTestCase(unittest.TestCase):
     def test_missing_config_file(self, makedirs, edit):
         runner = CliRunner()
         with mock.patch("ofx_processor.utils.ynab.open", mock.mock_open()) as mock_file:
-            result = runner.invoke(self.cli, ["revolut", "tests/samples/revolut.csv"])
+            result = runner.invoke(
+                self.cli, ["revolut", "tests/samples/revolut.csv", "--keep"]
+            )
             mock_file.assert_called_once()
         makedirs.assert_called_once_with(ynab.DEFAULT_CONFIG_DIR, exist_ok=True)
         self.assertIn("Editing config file", result.output)
@@ -127,6 +120,44 @@ class DataTestCase(unittest.TestCase):
         cli.add_command(ynab.config, name="config")
         utils.discover_processors(cli)
         self.cli = cli
+
+    @mock.patch("requests.post")
+    def test_file_is_deleted_by_default(self, *args):
+        runner = CliRunner()
+        revolut_csv = "tests/samples/revolut.csv"
+        backup_file = "tests/samples/backup.csv"
+
+        # backup the file, other tests will need it
+        shutil.copyfile(revolut_csv, backup_file)
+
+        try:
+            self.assertTrue(os.path.isfile(revolut_csv))
+            result = runner.invoke(self.cli, ["revolut", revolut_csv])
+            self.assertEqual(result.exit_code, 0)
+            self.assertFalse(os.path.isfile(revolut_csv))
+        finally:
+            # restore the file so other tests can rely on it, whatever happens
+            shutil.copyfile(backup_file, revolut_csv)
+            os.unlink(backup_file)
+
+    @mock.patch("requests.post")
+    def test_file_is_kept_with_option(self, *args):
+        runner = CliRunner()
+        revolut_csv = "tests/samples/revolut.csv"
+        backup_file = "tests/samples/backup.csv"
+
+        # backup the file, other tests will need it
+        shutil.copyfile(revolut_csv, backup_file)
+
+        try:
+            self.assertTrue(os.path.isfile(revolut_csv))
+            result = runner.invoke(self.cli, ["revolut", revolut_csv, "--keep"])
+            self.assertEqual(result.exit_code, 0)
+            self.assertTrue(os.path.isfile(revolut_csv))
+        finally:
+            # restore the file so other tests can rely on it, whatever happens
+            shutil.copyfile(backup_file, revolut_csv)
+            os.unlink(backup_file)
 
     @mock.patch("requests.post")
     def test_revolut_sends_data_only_created(self, post):
@@ -162,7 +193,9 @@ class DataTestCase(unittest.TestCase):
         }
 
         runner = CliRunner()
-        result = runner.invoke(self.cli, ["revolut", "tests/samples/revolut.csv"])
+        result = runner.invoke(
+            self.cli, ["revolut", "tests/samples/revolut.csv", "--keep"]
+        )
 
         self.assertEqual(result.exit_code, 0)
         self.assertIn("Processed 9 transactions total.", result.output)
@@ -204,7 +237,9 @@ class DataTestCase(unittest.TestCase):
         }
 
         runner = CliRunner()
-        result = runner.invoke(self.cli, ["revolut", "tests/samples/revolut.csv"])
+        result = runner.invoke(
+            self.cli, ["revolut", "tests/samples/revolut.csv", "--keep"]
+        )
 
         self.assertEqual(result.exit_code, 0)
         self.assertIn("Processed 9 transactions total.", result.output)
@@ -231,7 +266,9 @@ class DataTestCase(unittest.TestCase):
         }
 
         runner = CliRunner()
-        result = runner.invoke(self.cli, ["revolut", "tests/samples/revolut.csv"])
+        result = runner.invoke(
+            self.cli, ["revolut", "tests/samples/revolut.csv", "--keep"]
+        )
 
         self.assertEqual(result.exit_code, 0)
         self.assertIn("Processed 9 transactions total.", result.output)
@@ -247,7 +284,7 @@ class DataTestCase(unittest.TestCase):
         expected_url = f"{ynab.BASE_URL}/budgets/<YOUR BUDGET ID>/transactions"
 
         runner = CliRunner()
-        runner.invoke(self.cli, ["bpvf", "tests/samples/bpvf.ofx"])
+        runner.invoke(self.cli, ["bpvf", "tests/samples/bpvf.ofx", "--keep"])
 
         post.assert_called_once_with(
             expected_url, json=expected_data, headers=expected_headers
@@ -262,7 +299,7 @@ class DataTestCase(unittest.TestCase):
         expected_url = f"{ynab.BASE_URL}/budgets/<YOUR BUDGET ID>/transactions"
 
         runner = CliRunner()
-        runner.invoke(self.cli, ["ce", "tests/samples/ce.ofx"])
+        runner.invoke(self.cli, ["ce", "tests/samples/ce.ofx", "--keep"])
 
         post.assert_called_once_with(
             expected_url, json=expected_data, headers=expected_headers
@@ -277,7 +314,7 @@ class DataTestCase(unittest.TestCase):
         expected_url = f"{ynab.BASE_URL}/budgets/<YOUR BUDGET ID>/transactions"
 
         runner = CliRunner()
-        runner.invoke(self.cli, ["lcl", "tests/samples/lcl.ofx"])
+        runner.invoke(self.cli, ["lcl", "tests/samples/lcl.ofx", "--keep"])
 
         post.assert_called_once_with(
             expected_url, json=expected_data, headers=expected_headers

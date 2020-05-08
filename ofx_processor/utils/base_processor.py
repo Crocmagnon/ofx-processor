@@ -1,3 +1,4 @@
+import os
 from collections import defaultdict
 
 import click
@@ -54,10 +55,12 @@ class BaseProcessor:
     def parse_file(self):
         return []  # pragma: nocover
 
-    def push_to_ynab(self):
+    def push_to_ynab(self, keep=True):
         transactions = self.get_transactions()
         click.secho(f"Processed {len(transactions)} transactions total.", fg="blue")
         ynab.push_transactions(transactions, account=self.account_name)
+        if not keep:
+            os.unlink(self.filename)
 
     def get_transactions(self):
         return list(map(self._get_transaction, self.iterable))
