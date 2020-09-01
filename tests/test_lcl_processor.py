@@ -46,6 +46,16 @@ class LclLineTestCase(unittest.TestCase):
         result_date = LclLine(transaction).get_date()
         self.assertEqual(result_date, expected_date)
 
+    def test_get_date_with_transaction_name_wrong_date(self):
+        transaction = OfxTransaction(
+            dtposted=datetime.datetime(2020, 1, 23, 1, 2, 3),
+            name=" CB  IKEA             25/25/25",
+        )
+        expected_date = "2020-01-23"
+
+        result_date = LclLine(transaction).get_date()
+        self.assertEqual(result_date, expected_date)
+
     def test_get_amount_positive(self):
         transaction = OfxTransaction(trnamt=52.2)
         expected_amount = 52200
