@@ -1,12 +1,43 @@
 import sys
+from datetime import datetime
 
 import click
+import dateparser
 
 from ofx_processor.utils.base_ofx import OfxBaseLine, OfxBaseProcessor
 
 
 class LclLine(OfxBaseLine):
-    pass
+    def _extract_payee_and_date(self):
+        split = self.data.name.split()
+        default_date = (
+            self.data.dtposted.isoformat().split("T")[0] if self.data.dtposted else None
+        )
+
+        if not split:
+            return "", default_date
+
+        date_spot = split[-1]
+        if "/" not in date_spot:
+            return " ".join(split), default_date
+
+        date = dateparser.parse(
+            split[-1], date_formats=["%d/%m/%Y"], languages=["fr"]
+        )  # type: datetime
+        if date:
+            name = " ".join(split[:-1])
+            date = date.strftime("%Y-%m-%d")  # type: str
+        else:
+            name = " ".join(split)
+            date = default_date
+
+        return name, date
+
+    def get_payee(self):
+        return self._extract_payee_and_date()[0]
+
+    def get_date(self):
+        return self._extract_payee_and_date()[1]
 
 
 class LclProcessor(OfxBaseProcessor):

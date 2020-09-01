@@ -2,8 +2,15 @@
   {
     "date": "2020-03-12",
     "amount": 1000000,
-    "payee_name": "VIR INST M     PAYEE 1",
+    "payee_name": "VIR INST M PAYEE 1",
     "memo": null,
     "import_id": "YNAB:1000000:2020-03-12:1"
+  },
+  {
+    "date": "2020-07-17",
+    "amount": -400450,
+    "payee_name": "CB IKEA",
+    "memo": null,
+    "import_id": "YNAB:-400450:2020-07-17:1"
   }
 ]

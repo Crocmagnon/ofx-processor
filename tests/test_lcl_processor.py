@@ -14,6 +14,14 @@ class LclLineTestCase(unittest.TestCase):
         result_name = LclLine(transaction).get_payee()
         self.assertEqual(result_name, name)
 
+    def test_get_name_with_date(self):
+        name = " CB  IKEA             17/07/20"
+        transaction = OfxTransaction(name=name)
+
+        expected_name = "CB IKEA"
+        result_name = LclLine(transaction).get_payee()
+        self.assertEqual(result_name, expected_name)
+
     def test_get_memo(self):
         memo = "VIR INST"
         transaction = OfxTransaction(memo=memo)
@@ -24,6 +32,16 @@ class LclLineTestCase(unittest.TestCase):
     def test_get_date(self):
         transaction = OfxTransaction(dtposted=datetime.datetime(2020, 1, 23, 1, 2, 3))
         expected_date = "2020-01-23"
+
+        result_date = LclLine(transaction).get_date()
+        self.assertEqual(result_date, expected_date)
+
+    def test_get_date_with_transaction_name(self):
+        transaction = OfxTransaction(
+            dtposted=datetime.datetime(2020, 1, 23, 1, 2, 3),
+            name=" CB  IKEA             17/07/20",
+        )
+        expected_date = "2020-07-17"
 
         result_date = LclLine(transaction).get_date()
         self.assertEqual(result_date, expected_date)

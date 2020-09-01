@@ -2,15 +2,14 @@ import os
 from collections import defaultdict
 
 import click
+from ofxtools.models import STMTTRN
 
 from ofx_processor.utils import ynab
 
 
 class BaseLine:
-    data = None
-
-    def __init__(self, data=None):
-        self.data = data
+    def __init__(self, data: STMTTRN = None):
+        self.data = data  # type: STMTTRN
 
     def get_date(self):
         raise NotImplementedError  # pragma: nocover
