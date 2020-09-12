@@ -9,11 +9,17 @@ from ofx_processor.utils.base_ofx import OfxBaseLine, OfxBaseProcessor
 
 class LclLine(OfxBaseLine):
     def _extract_payee_and_date(self):
-        split = self.data.name.split()
         default_date = (
             self.data.dtposted.isoformat().split("T")[0] if self.data.dtposted else None
         )
 
+        if self.data.trntype.lower() == "check":
+            return "CHQ", default_date
+
+        if not self.data.name:
+            return "", default_date
+
+        split = self.data.name.split()
         if not split:
             return "", default_date
 
@@ -38,6 +44,11 @@ class LclLine(OfxBaseLine):
 
     def get_date(self):
         return self._extract_payee_and_date()[1]
+
+    def get_memo(self):
+        if self.data.trntype.lower() == "check":
+            return f"CHQ {self.data.checknum}"
+        return super().get_memo()
 
 
 class LclProcessor(OfxBaseProcessor):

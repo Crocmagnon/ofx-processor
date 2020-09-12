@@ -12,5 +12,12 @@
     "payee_name": "CB IKEA",
     "memo": null,
     "import_id": "YNAB:-400450:2020-07-17:1"
+  },
+  {
+    "date": "2020-07-21",
+    "amount": -42000,
+    "payee_name": "CHQ",
+    "memo": "CHQ 1234567",
+    "import_id": "YNAB:-42000:2020-07-21:1"
   }
 ]
