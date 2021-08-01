@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "ofx-processor"
-version = "2.1.2"
+version = "2.1.3"
 description = "Personal ofx processor"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 authors = ["Gabriel Augendre <gabriel@augendre.info>"]
-homepage = "https://github.com/Crocmagnon/ofx-processor/"
-repository = "https://github.com/Crocmagnon/ofx-processor/"
+homepage = "https://git.augendre.info/gaugendre/ofx-processor"
+repository = "https://git.augendre.info/gaugendre/ofx-processor"
 keywords = [
     "ynab",
     "finances",
