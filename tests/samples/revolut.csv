@@ -1,10 +1,11 @@
 Completed Date;Reference;Paid Out (EUR);Paid In (EUR);Exchange Out;Exchange In; Balance (EUR);Exchange Rate;Category
-29 Jan;To Person 1;53,63;;;;21,66; ;Transfers
-29 Jan;To Person 2;0,90;;;;75,29; ;Transfers
-29 Jan;Refund from Company 2;;53,63;;;76,19; ;Shopping
-24 Jan;To Person 3;8,50;;;;22,56; ;Transfers
-16 Jan;To Person 4;1,40;;;;31,06; ;Transfers
-10 Jan;To Person 5;2,01;;;;32,46; ;Transfers
-10 Jan;To Person 6;1,21;;;;34,47; ;Transfers
-5 Jan;Company 1;123,68;;USD 138,00;;35,68;FX-rate €1 = US$1,1158;Shopping
-4 Jan;Top-up via Apple Pay;;100,00;;;159,36; ;General
+30 août 2021;Virement de NAME;;1 500,00 ;;;1 521,66 ; ;Transferts
+29 Jan 2020;To Person 1;53,63;;;;21,66; ;Transfers
+29 Jan 2020;To Person 2;0,90;;;;75,29; ;Transfers
+29 Jan 2020;Refund from Company 2;;53,63;;;76,19; ;Shopping
+24 Jan 2020;To Person 3;8,50;;;;22,56; ;Transfers
+16 Jan 2020;To Person 4;1,40;;;;31,06; ;Transfers
+10 Jan 2020;To Person 5;2,01;;;;32,46; ;Transfers
+10 Jan 2020;To Person 6;1,21;;;;34,47; ;Transfers
+5 Jan 2020;Company 1;123,68;;USD 138,00;;35,68;FX-rate €1 = US$1,1158;Shopping
+4 Jan 2020;Top-up via Apple Pay;;100,00;;;159,36; ;General

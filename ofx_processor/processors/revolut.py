@@ -1,4 +1,5 @@
 import csv
+import re
 import sys
 
 import click
@@ -7,9 +8,11 @@ import dateparser
 from ofx_processor.utils.base_processor import BaseProcessor, BaseLine
 
 
-def _amount_str_to_float(amount):
+def _amount_str_to_float(amount: str):
     if amount:
-        return float(amount.replace(",", "."))
+        amount = amount.replace(",", ".")
+        amount = re.sub(r"\s+", "", amount)
+        return float(amount)
     return ""
 
 

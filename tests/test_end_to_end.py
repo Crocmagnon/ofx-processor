@@ -77,7 +77,7 @@ class ConfigTestCase(unittest.TestCase):
                     self.cli, ["revolut", "tests/samples/revolut.csv", "--keep"]
                 )
                 expected_filename = ynab.get_config_file_name()
-                self.assertIn("Error while parsing config file", result.output)
+                self.assertIn("Error while parsing config file", result.output, f"config_file: {name}")
                 edit.assert_called_with(filename=expected_filename)
 
     @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME", "file.ini")
@@ -187,6 +187,7 @@ class DataTestCase(unittest.TestCase):
                     {"id": "created:9", "matched_transaction_id": None},
                     {"id": "created:10", "matched_transaction_id": None},
                     {"id": "created:11", "matched_transaction_id": None},
+                    {"id": "created:12", "matched_transaction_id": None},
                 ],
                 "duplicate_import_ids": [],
             }
@@ -198,8 +199,8 @@ class DataTestCase(unittest.TestCase):
         )
 
         self.assertEqual(result.exit_code, 0)
-        self.assertIn("Processed 9 transactions total.", result.output)
-        self.assertIn("9 transactions created in YNAB.", result.output)
+        self.assertIn("Processed 10 transactions total.", result.output)
+        self.assertIn("10 transactions created in YNAB.", result.output)
         self.assertNotIn("transactions ignored (duplicates).", result.output)
 
     @mock.patch("requests.post")
@@ -232,6 +233,7 @@ class DataTestCase(unittest.TestCase):
                     "duplicate:9",
                     "duplicate:10",
                     "duplicate:11",
+                    "duplicate:12",
                 ],
             }
         }
@@ -242,9 +244,9 @@ class DataTestCase(unittest.TestCase):
         )
 
         self.assertEqual(result.exit_code, 0)
-        self.assertIn("Processed 9 transactions total.", result.output)
+        self.assertIn("Processed 10 transactions total.", result.output)
         self.assertIn("3 transactions created in YNAB.", result.output)
-        self.assertIn("6 transactions ignored (duplicates).", result.output)
+        self.assertIn("7 transactions ignored (duplicates).", result.output)
 
     @mock.patch("requests.post")
     def test_revolut_sends_data_only_duplicates(self, post):
@@ -261,6 +263,7 @@ class DataTestCase(unittest.TestCase):
                     "duplicate:7",
                     "duplicate:8",
                     "duplicate:9",
+                    "duplicate:10",
                 ],
             }
         }
@@ -271,9 +274,9 @@ class DataTestCase(unittest.TestCase):
         )
 
         self.assertEqual(result.exit_code, 0)
-        self.assertIn("Processed 9 transactions total.", result.output)
+        self.assertIn("Processed 10 transactions total.", result.output)
         self.assertNotIn("transactions created in YNAB.", result.output)
-        self.assertIn("9 transactions ignored (duplicates).", result.output)
+        self.assertIn("10 transactions ignored (duplicates).", result.output)
 
     @mock.patch("requests.post")
     def test_bpvf_sends_to_ynab(self, post):

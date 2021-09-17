@@ -1,5 +1,12 @@
 [
   {
+    "date": "2021-08-30",
+    "amount": 1500000,
+    "payee_name": "Virement de NAME",
+    "memo": "Transferts",
+    "import_id": "YNAB:1500000:2021-08-30:1"
+  },
+  {
     "date": "2020-01-29",
     "amount": -53630,
     "payee_name": "To Person 1",
