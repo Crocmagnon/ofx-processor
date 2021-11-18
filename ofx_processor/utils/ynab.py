@@ -70,6 +70,7 @@ def push_transactions(transactions, account):
     url = f"{BASE_URL}/budgets/{budget_id}/transactions"
     for transaction in transactions:
         transaction["account_id"] = account
+        transaction["cleared"] = "cleared"
 
     data = {"transactions": transactions}
     headers = {"Authorization": f"Bearer {token}"}
