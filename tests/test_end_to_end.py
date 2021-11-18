@@ -7,8 +7,7 @@ from unittest.mock import call
 
 from click.testing import CliRunner
 
-from ofx_processor.utils import utils
-from ofx_processor.utils import ynab
+from ofx_processor.utils import utils, ynab
 from ofx_processor.utils.ynab import config
 
 
@@ -77,7 +76,11 @@ class ConfigTestCase(unittest.TestCase):
                     self.cli, ["revolut", "tests/samples/revolut.csv", "--keep"]
                 )
                 expected_filename = ynab.get_config_file_name()
-                self.assertIn("Error while parsing config file", result.output, f"config_file: {name}")
+                self.assertIn(
+                    "Error while parsing config file",
+                    result.output,
+                    f"config_file: {name}",
+                )
                 edit.assert_called_with(filename=expected_filename)
 
     @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME", "file.ini")

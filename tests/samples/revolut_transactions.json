@@ -76,7 +76,7 @@
       "date": "2020-01-05",
       "amount": -123680,
       "payee_name": "Company 1",
-      "memo": "Shopping - FX-rate €1 = US$1,1158",
+      "memo": "Shopping - FX-rate \u20ac1\u2008=\u2008US$1,1158",
       "import_id": "YNAB:-123680:2020-01-05:1",
       "account_id": "<YOUR REVOLUT ACCOUNT ID>",
       "cleared": "cleared"

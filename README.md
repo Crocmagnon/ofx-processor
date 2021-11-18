@@ -41,4 +41,4 @@ The file passed in parameter will be deleted unless specified (`--keep` option o
 
 ## Versions
 
-This project follows [Semantic Versioning](https://semver.org/). 
+This project follows [Semantic Versioning](https://semver.org/).

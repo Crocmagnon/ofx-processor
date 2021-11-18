@@ -1,6 +1,6 @@
 import re
 
-from ofx_processor.utils.base_ofx import OfxBaseProcessor, OfxBaseLine
+from ofx_processor.utils.base_ofx import OfxBaseLine, OfxBaseProcessor
 
 
 class CeLine(OfxBaseLine):

@@ -3,9 +3,9 @@ import json
 import unittest
 
 from ofx_processor.processors.revolut import (
-    _amount_str_to_float,
     RevolutLine,
     RevolutProcessor,
+    _amount_str_to_float,
 )
 
 

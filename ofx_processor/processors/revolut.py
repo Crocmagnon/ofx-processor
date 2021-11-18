@@ -5,7 +5,7 @@ import sys
 import click
 import dateparser
 
-from ofx_processor.utils.base_processor import BaseProcessor, BaseLine
+from ofx_processor.utils.base_processor import BaseLine, BaseProcessor
 
 
 def _amount_str_to_float(amount: str):

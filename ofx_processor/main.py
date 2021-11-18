@@ -1,7 +1,7 @@
 import click
 
 from ofx_processor.utils import ynab
-from ofx_processor.utils.utils import discover_processors, OrderedGroup
+from ofx_processor.utils.utils import OrderedGroup, discover_processors
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
