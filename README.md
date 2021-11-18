@@ -4,10 +4,17 @@
 ![PyPI - Format](https://img.shields.io/pypi/format/ofx-processor)
 ![PyPI - Status](https://img.shields.io/pypi/status/ofx-processor)
 
+## Install
+
+```shell
+python -m pip install ofx-processor
+```
+
+https://pypi.org/project/ofx-processor/
 
 ## Usage
 
-```shell script
+```
 Usage: ynab [OPTIONS] COMMAND [ARGS]...
 
   Import your data to YNAB with the processors listed below or manage your
