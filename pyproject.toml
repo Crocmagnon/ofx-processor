@@ -65,6 +65,10 @@ commands =
     poetry run inv test
 """
 
+[tool.coverage.run]
+omit = ["tasks.py"]
+branch = true
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

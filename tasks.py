@@ -14,7 +14,11 @@ def test(ctx):
 @task
 def test_cov(ctx):
     with ctx.cd(BASE_DIR):
-        ctx.run(f"pytest --cov=.", pty=True, echo=True)
+        ctx.run(
+            f"pytest --cov=. --cov-report term-missing:skip-covered",
+            pty=True,
+            echo=True,
+        )
 
 
 @task
