@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ofx-processor"
-version = "3.0.0"
+version = "3.1.0"
 description = "Personal ofx processor"
 readme = "README.md"
 license = "GPL-3.0-or-later"
@@ -61,7 +61,7 @@ envlist = py38, py39, py310
 [testenv]
 whitelist_externals = poetry
 commands =
-    poetry install
+    poetry install --remove-untracked
     poetry run inv test
 """
 
