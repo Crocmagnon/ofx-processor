@@ -49,3 +49,10 @@ def publish_docker(ctx):
             echo=True,
         )
         ctx.run(f"docker push {docker_image}", pty=True, echo=True)
+
+
+@task
+def tag(ctx, tag_name):
+    with ctx.cd(BASE_DIR):
+        ctx.run(f'git tag {tag_name} -am "{tag_name}"', pty=True, echo=True)
+        ctx.run(f"git push origin {tag_name}", pty=True, echo=True)
