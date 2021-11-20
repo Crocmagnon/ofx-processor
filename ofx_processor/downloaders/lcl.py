@@ -38,6 +38,12 @@ class LclDownloader:
 
         click.secho("Logging in to LCL...", fg="blue")
         selenium.get("https://monespace.lcl.fr/connexion")
+        try:
+            self._click(By.ID, "popin_tc_privacy_button_2")
+        except:
+            # If the user has already accepted the privacy policy,
+            # the button is not present
+            pass
         login_input = selenium.find_element(By.ID, "identifier")
         login_input.send_keys(self.config.bank_identifier)
         self._click(By.CLASS_NAME, "app-cta-button")
