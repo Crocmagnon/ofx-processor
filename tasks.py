@@ -15,3 +15,15 @@ def test(ctx):
 def test_cov(ctx):
     with ctx.cd(BASE_DIR):
         ctx.run(f"pytest --cov=.", pty=True, echo=True)
+
+
+@task
+def full_test(ctx):
+    with ctx.cd(BASE_DIR):
+        ctx.run(f"tox", pty=True, echo=True)
+
+
+@task
+def publish(ctx):
+    with ctx.cd(BASE_DIR):
+        ctx.run(f"poetry publish --build", pty=True, echo=True)
