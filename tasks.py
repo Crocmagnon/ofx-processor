@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from invoke import task
@@ -29,5 +30,10 @@ def full_test(ctx):
 
 @task
 def publish(ctx):
+    username = os.getenv("PYPI_USERNAME")
+    password = os.getenv("PYPI_TOKEN")
     with ctx.cd(BASE_DIR):
-        ctx.run(f"poetry publish --build", pty=True, echo=True)
+        args = ""
+        if username and password:
+            args = f"--username {username} --password {password}"
+        ctx.run(f"poetry publish --build {args}", pty=True, echo=True)
