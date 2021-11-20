@@ -37,3 +37,15 @@ def publish(ctx):
         if username and password:
             args = f"--username {username} --password {password}"
         ctx.run(f"poetry publish --build {args}", pty=True, echo=False)
+
+
+@task
+def publish_docker(ctx):
+    with ctx.cd(BASE_DIR):
+        docker_image = "rg.fr-par.scw.cloud/crocmagnon/ynab"
+        ctx.run(
+            f"docker build --build-arg OFX_VERSION=$(poetry version -s) -t {docker_image} .",
+            pty=True,
+            echo=True,
+        )
+        ctx.run(f"docker push {docker_image}", pty=True, echo=True)
