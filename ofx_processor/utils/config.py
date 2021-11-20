@@ -38,10 +38,16 @@ def config():
     """Manage configuration."""
 
 
-@config.command("edit")
+@config.command("edit", help="Edit the config file.")
 def edit_config():
     config_file = get_config_file_name()
     click.edit(filename=config_file)
+
+
+@config.command("file", help="Print the config file path.")
+def show_file_name():
+    config_file = get_config_file_name()
+    click.echo(config_file)
 
 
 @dataclass(frozen=True)
