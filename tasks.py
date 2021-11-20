@@ -36,4 +36,4 @@ def publish(ctx):
         args = ""
         if username and password:
             args = f"--username {username} --password {password}"
-        ctx.run(f"poetry publish --build {args}", pty=True, echo=True)
+        ctx.run(f"poetry publish --build {args}", pty=True, echo=False)
