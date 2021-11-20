@@ -7,8 +7,9 @@ from unittest.mock import call
 
 from click.testing import CliRunner
 
+import ofx_processor.utils.config
 from ofx_processor.utils import utils, ynab
-from ofx_processor.utils.ynab import config
+from ofx_processor.utils.config import config
 
 
 class UtilsTestCase(unittest.TestCase):
@@ -38,13 +39,14 @@ class ConfigTestCase(unittest.TestCase):
 
         # This is run at import time and the cli module is already imported before this test
         # so we need to re-run the add_command to make it available.
-        cli.add_command(ynab.config, name="config")
+        cli.add_command(ofx_processor.utils.config.config, name="config")
         utils.discover_processors(cli)
         self.cli = cli
 
     @mock.patch("click.edit")
     @mock.patch(
-        "ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", os.path.join("tests", "samples")
+        "ofx_processor.utils.config.DEFAULT_CONFIG_DIR",
+        os.path.join("tests", "samples"),
     )
     def test_config_edit(self, edit):
         runner = CliRunner()
@@ -55,11 +57,12 @@ class ConfigTestCase(unittest.TestCase):
 
     @mock.patch("click.edit")
     @mock.patch(
-        "ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME",
+        "ofx_processor.utils.config.DEFAULT_CONFIG_FILENAME",
         "config_broken_duplicate_key.ini",
     )
     @mock.patch(
-        "ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", os.path.join("tests", "samples")
+        "ofx_processor.utils.config.DEFAULT_CONFIG_DIR",
+        os.path.join("tests", "samples"),
     )
     def test_broken_config_file(self, edit):
         broken_files = [
@@ -70,12 +73,12 @@ class ConfigTestCase(unittest.TestCase):
             "config_broken_missing_token.ini",
         ]
         for name in broken_files:
-            with mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME", name):
+            with mock.patch("ofx_processor.utils.config.DEFAULT_CONFIG_FILENAME", name):
                 runner = CliRunner()
                 result = runner.invoke(
-                    self.cli, ["revolut", "tests/samples/revolut.csv", "--keep"]
+                    self.cli, ["revolut", "-f", "tests/samples/revolut.csv", "--keep"]
                 )
-                expected_filename = ynab.get_config_file_name()
+                expected_filename = ofx_processor.utils.config.get_config_file_name()
                 self.assertIn(
                     "Error while parsing config file",
                     result.output,
@@ -83,36 +86,43 @@ class ConfigTestCase(unittest.TestCase):
                 )
                 edit.assert_called_with(filename=expected_filename)
 
-    @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME", "file.ini")
+    @mock.patch("ofx_processor.utils.config.DEFAULT_CONFIG_FILENAME", "file.ini")
     @mock.patch(
-        "ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR",
+        "ofx_processor.utils.config.DEFAULT_CONFIG_DIR",
         os.path.join("some", "config", "folder"),
     )
     def test_get_config_file_name(self):
         expected = os.path.join("some", "config", "folder", "file.ini")
-        self.assertEqual(ynab.get_config_file_name(), expected)
+        self.assertEqual(ofx_processor.utils.config.get_config_file_name(), expected)
 
+    @mock.patch("requests.post")
     @mock.patch("click.edit")
     @mock.patch("os.makedirs")
-    @mock.patch("ofx_processor.utils.ynab.DEFAULT_CONFIG_FILENAME", "notfound.ini")
+    @mock.patch("ofx_processor.utils.config.DEFAULT_CONFIG_FILENAME", "notfound.ini")
     @mock.patch(
-        "ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", os.path.join("tests", "samples")
+        "ofx_processor.utils.config.DEFAULT_CONFIG_DIR",
+        os.path.join("tests", "samples"),
     )
-    def test_missing_config_file(self, makedirs, edit):
+    def test_missing_config_file(self, makedirs, edit, *args):
         runner = CliRunner()
-        with mock.patch("ofx_processor.utils.ynab.open", mock.mock_open()) as mock_file:
+        with mock.patch(
+            "ofx_processor.utils.config.open", mock.mock_open()
+        ) as mock_file:
             result = runner.invoke(
-                self.cli, ["revolut", "tests/samples/revolut.csv", "--keep"]
+                self.cli, ["revolut", "-f", "tests/samples/revolut.csv", "--keep"]
             )
             mock_file.assert_called_once()
-        makedirs.assert_called_once_with(ynab.DEFAULT_CONFIG_DIR, exist_ok=True)
+        makedirs.assert_called_once_with(
+            ofx_processor.utils.config.DEFAULT_CONFIG_DIR, exist_ok=True
+        )
         self.assertIn("Editing config file", result.output)
-        expected_filename = ynab.get_config_file_name()
+        expected_filename = ofx_processor.utils.config.get_config_file_name()
         edit.assert_called_once_with(filename=expected_filename)
+        # post.assert_not_called()
 
 
 @mock.patch(
-    "ofx_processor.utils.ynab.DEFAULT_CONFIG_DIR", os.path.join("tests", "samples")
+    "ofx_processor.utils.config.DEFAULT_CONFIG_DIR", os.path.join("tests", "samples")
 )
 class DataTestCase(unittest.TestCase):
     def setUp(self):
@@ -120,12 +130,13 @@ class DataTestCase(unittest.TestCase):
 
         # This is run at import time and the cli module is already imported before this test
         # so we need to re-run the add_command to make it available.
-        cli.add_command(ynab.config, name="config")
+        cli.add_command(ofx_processor.utils.config.config, name="config")
         utils.discover_processors(cli)
         self.cli = cli
 
     @mock.patch("requests.post")
-    def test_file_is_deleted_by_default(self, *args):
+    def test_file_is_deleted_by_default(self, post):
+        post.return_value.status_code = 201
         runner = CliRunner()
         revolut_csv = "tests/samples/revolut.csv"
         backup_file = "tests/samples/backup.csv"
@@ -135,7 +146,7 @@ class DataTestCase(unittest.TestCase):
 
         try:
             self.assertTrue(os.path.isfile(revolut_csv))
-            result = runner.invoke(self.cli, ["revolut", revolut_csv])
+            result = runner.invoke(self.cli, ["revolut", "-f", revolut_csv])
             self.assertEqual(result.exit_code, 0)
             self.assertFalse(os.path.isfile(revolut_csv))
         finally:
@@ -144,7 +155,8 @@ class DataTestCase(unittest.TestCase):
             os.unlink(backup_file)
 
     @mock.patch("requests.post")
-    def test_file_is_kept_with_option(self, *args):
+    def test_file_is_kept_with_option(self, post):
+        post.return_value.status_code = 201
         runner = CliRunner()
         revolut_csv = "tests/samples/revolut.csv"
         backup_file = "tests/samples/backup.csv"
@@ -154,7 +166,9 @@ class DataTestCase(unittest.TestCase):
 
         try:
             self.assertTrue(os.path.isfile(revolut_csv))
-            result = runner.invoke(self.cli, ["revolut", revolut_csv, "--keep"])
+            result = runner.invoke(
+                self.cli, ["revolut", "--filename", revolut_csv, "--keep"]
+            )
             self.assertEqual(result.exit_code, 0)
             self.assertTrue(os.path.isfile(revolut_csv))
         finally:
@@ -164,6 +178,7 @@ class DataTestCase(unittest.TestCase):
 
     @mock.patch("requests.post")
     def test_revolut_sends_data_only_created(self, post):
+        post.return_value.status_code = 201
         post.return_value.json.return_value = {
             "data": {
                 "transactions": [
@@ -198,7 +213,7 @@ class DataTestCase(unittest.TestCase):
 
         runner = CliRunner()
         result = runner.invoke(
-            self.cli, ["revolut", "tests/samples/revolut.csv", "--keep"]
+            self.cli, ["revolut", "-f", "tests/samples/revolut.csv", "--keep"]
         )
 
         self.assertEqual(result.exit_code, 0)
@@ -208,6 +223,7 @@ class DataTestCase(unittest.TestCase):
 
     @mock.patch("requests.post")
     def test_revolut_sends_data_some_created_some_duplicates(self, post):
+        post.return_value.status_code = 201
         post.return_value.json.return_value = {
             "data": {
                 "transactions": [
@@ -243,7 +259,7 @@ class DataTestCase(unittest.TestCase):
 
         runner = CliRunner()
         result = runner.invoke(
-            self.cli, ["revolut", "tests/samples/revolut.csv", "--keep"]
+            self.cli, ["revolut", "-f", "tests/samples/revolut.csv", "--keep"]
         )
 
         self.assertEqual(result.exit_code, 0)
@@ -253,6 +269,7 @@ class DataTestCase(unittest.TestCase):
 
     @mock.patch("requests.post")
     def test_revolut_sends_data_only_duplicates(self, post):
+        post.return_value.status_code = 201
         post.return_value.json.return_value = {
             "data": {
                 "transactions": [],
@@ -273,7 +290,7 @@ class DataTestCase(unittest.TestCase):
 
         runner = CliRunner()
         result = runner.invoke(
-            self.cli, ["revolut", "tests/samples/revolut.csv", "--keep"]
+            self.cli, ["revolut", "-f", "tests/samples/revolut.csv", "--keep"]
         )
 
         self.assertEqual(result.exit_code, 0)
@@ -283,6 +300,7 @@ class DataTestCase(unittest.TestCase):
 
     @mock.patch("requests.post")
     def test_bpvf_sends_to_ynab(self, post):
+        post.return_value.status_code = 201
         with open("tests/samples/bpvf_transactions.json", encoding="utf-8") as f:
             expected_data = json.load(f)
 
@@ -290,7 +308,7 @@ class DataTestCase(unittest.TestCase):
         expected_url = f"{ynab.BASE_URL}/budgets/<YOUR BUDGET ID>/transactions"
 
         runner = CliRunner()
-        runner.invoke(self.cli, ["bpvf", "tests/samples/bpvf.ofx", "--keep"])
+        runner.invoke(self.cli, ["bpvf", "-f", "tests/samples/bpvf.ofx", "--keep"])
 
         post.assert_called_once_with(
             expected_url, json=expected_data, headers=expected_headers
@@ -298,6 +316,7 @@ class DataTestCase(unittest.TestCase):
 
     @mock.patch("requests.post")
     def test_ce_sends_to_ynab(self, post):
+        post.return_value.status_code = 201
         with open("tests/samples/ce_transactions.json", encoding="utf-8") as f:
             expected_data = json.load(f)
 
@@ -305,7 +324,7 @@ class DataTestCase(unittest.TestCase):
         expected_url = f"{ynab.BASE_URL}/budgets/<YOUR BUDGET ID>/transactions"
 
         runner = CliRunner()
-        runner.invoke(self.cli, ["ce", "tests/samples/ce.ofx", "--keep"])
+        runner.invoke(self.cli, ["ce", "-f", "tests/samples/ce.ofx", "--keep"])
 
         post.assert_called_once_with(
             expected_url, json=expected_data, headers=expected_headers
@@ -313,6 +332,7 @@ class DataTestCase(unittest.TestCase):
 
     @mock.patch("requests.post")
     def test_lcl_sends_to_ynab(self, post):
+        post.return_value.status_code = 201
         with open("tests/samples/lcl_transactions.json", encoding="utf-8") as f:
             expected_data = json.load(f)
 
@@ -320,7 +340,7 @@ class DataTestCase(unittest.TestCase):
         expected_url = f"{ynab.BASE_URL}/budgets/<YOUR BUDGET ID>/transactions"
 
         runner = CliRunner()
-        runner.invoke(self.cli, ["lcl", "tests/samples/lcl.ofx", "--keep"])
+        runner.invoke(self.cli, ["lcl", "-f", "tests/samples/lcl.ofx", "--keep"])
 
         post.assert_called_once_with(
             expected_url, json=expected_data, headers=expected_headers

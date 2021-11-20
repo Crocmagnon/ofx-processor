@@ -47,7 +47,7 @@ class BaseProcessor:
     account_name = None
 
     def __init__(self, filename):
-        self.filename = filename
+        self.filename = str(filename)
         self.iterable = self.parse_file()
         self.transaction_ids = defaultdict(int)
 

@@ -1,10 +1,33 @@
 import collections
 import importlib
+import inspect
 import pkgutil
 
 import click
 
 from ofx_processor import processors
+
+ARG_TO_OPTION = {
+    "keep": click.option(
+        "--keep/--no-keep",
+        help="Keep the file after processing it.",
+        default=False,
+        show_default=True,
+    ),
+    "download": click.option(
+        "--download/--no-download",
+        help="Download the file automatically.",
+        default=False,
+        show_default=True,
+    ),
+    "filename": click.option(
+        "-f",
+        "--filename",
+        help="Use specified file.",
+        default="",
+        show_default=True,
+    ),
+}
 
 
 def discover_processors(cli: click.Group):
@@ -41,13 +64,10 @@ def discover_processors(cli: click.Group):
 
                 # Apply default decorators
                 method = getattr(module, "main")
-                method = click.option(
-                    "--keep/--no-keep",
-                    help="Keep the file after processing it.",
-                    default=False,
-                    show_default=True,
-                )(method)
-                method = click.argument("filename")(method)
+                method_args = inspect.getfullargspec(method).args
+                for arg in method_args:
+                    if arg in ARG_TO_OPTION:
+                        method = ARG_TO_OPTION[arg](method)
                 method = click.command(cls.command_name)(method)
 
                 cli.add_command(method)

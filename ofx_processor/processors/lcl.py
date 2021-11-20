@@ -4,6 +4,7 @@ from datetime import datetime
 import click
 import dateparser
 
+from ofx_processor.downloaders import LclDownloader
 from ofx_processor.utils.base_ofx import OfxBaseLine, OfxBaseProcessor
 
 
@@ -79,6 +80,14 @@ class LclProcessor(OfxBaseProcessor):
         return transactions
 
 
-def main(filename, keep):
+def main(filename, keep, download):
     """Import LCL bank statement (OFX file)."""
+    if download:
+        if filename:
+            click.secho(
+                "You can't specify a file name with auto download. "
+                "Specified file name will be ignored.",
+                fg="yellow",
+            )
+        filename = LclDownloader().download()
     LclProcessor(filename).push_to_ynab(keep)

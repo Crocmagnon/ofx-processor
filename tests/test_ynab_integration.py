@@ -2,13 +2,15 @@ import json
 import unittest
 from unittest import mock
 
+import ofx_processor.utils.config
 from ofx_processor.utils import ynab
 
 
 class YNABIntegrationTestCase(unittest.TestCase):
     @mock.patch("requests.post")
     def test_data_sent_to_ynab(self, post):
-        ynab.DEFAULT_CONFIG_DIR = "tests/samples"
+        post.return_value.status_code = 201
+        ofx_processor.utils.config.DEFAULT_CONFIG_DIR = "tests/samples"
 
         with open("tests/samples/revolut_expected.json", encoding="utf-8") as f:
             transactions = json.load(f)
