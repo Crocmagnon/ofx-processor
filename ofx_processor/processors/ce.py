@@ -30,9 +30,9 @@ class CeProcessor(OfxBaseProcessor):
     line_class = CeLine
 
 
-def main(filename, keep, send):
+def main(filename, keep, send_method):
     """Import CE bank statement (OFX file)."""
     processor = CeProcessor(filename)
-    if send:
-        processor.send_reconciled_amount()
+    if send_method:
+        processor.send_reconciled_amount(send_method)
     processor.push_to_ynab(keep)

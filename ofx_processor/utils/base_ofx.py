@@ -33,10 +33,13 @@ class OfxBaseProcessor(BaseProcessor):
         ofx = self._parse_file()
         return ofx.statements[0].transactions
 
-    def send_reconciled_amount(self):
+    def send_reconciled_amount(self, method):
         amount = self._get_reconciled_amount()
-        click.secho(f"Reconciled balance: {amount}. Sending...", fg="blue")
-        self._send_mail(amount)
+        click.secho(f"Reconciled balance: {amount}. Sending via {method}...", fg="blue")
+        if method == "email":
+            self._send_mail(amount)
+        elif method == "sms":
+            self._send_sms(amount)
 
     def _get_reconciled_amount(self) -> Decimal:
         ofx = self._parse_file()
@@ -57,7 +60,7 @@ class OfxBaseProcessor(BaseProcessor):
         if not config.email_setup:
             click.secho("Email is not properly setup", fg="yellow")
             return
-        return requests.post(
+        res = requests.post(
             f"https://api.mailgun.net/v3/{config.mailgun_domain}/messages",
             auth=("api", config.mailgun_api_key),
             data={
@@ -67,3 +70,21 @@ class OfxBaseProcessor(BaseProcessor):
                 "text": f"Here's your reconciled balance: {amount}",
             },
         )
+        if res.status_code >= 400:
+            click.secho("Error while sending email", fg="yellow")
+
+    def _send_sms(self, amount: Decimal):
+        config = get_config(self.account_name)
+        if not config.sms_setup:
+            click.secho("SMS is not properly setup", fg="yellow")
+            return
+        res = requests.post(
+            f"https://smsapi.free-mobile.fr/sendmsg",
+            json={
+                "user": config.sms_user,
+                "pass": config.sms_key,
+                "msg": f"Reconciled balance: {amount}",
+            },
+        )
+        if res.status_code >= 400:
+            click.secho("Error while sending SMS", fg="yellow")

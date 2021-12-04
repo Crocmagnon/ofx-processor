@@ -33,9 +33,9 @@ class BpvfProcessor(OfxBaseProcessor):
     command_name = "bpvf"
 
 
-def main(filename, keep, send):
+def main(filename, keep, send_method):
     """Import BPVF bank statement (OFX file)."""
     processor = BpvfProcessor(filename)
-    if send:
-        processor.send_reconciled_amount()
+    if send_method:
+        processor.send_reconciled_amount(send_method)
     processor.push_to_ynab(keep)

@@ -65,6 +65,8 @@ class Config:
     mailgun_domain: Optional[str] = None
     mailgun_from: Optional[str] = None
     email_recipient: Optional[str] = None
+    sms_user: Optional[str] = None
+    sms_key: Optional[str] = None
 
     @property
     def email_setup(self) -> bool:
@@ -75,6 +77,16 @@ class Config:
                 self.mailgun_domain,
                 self.mailgun_api_key,
                 self.email_recipient,
+            ]
+        )
+
+    @property
+    def sms_setup(self) -> bool:
+        """Return true if all fields are setup for sms."""
+        return all(
+            [
+                self.sms_user,
+                self.sms_key,
             ]
         )
 
@@ -108,6 +120,8 @@ def get_config(account: str) -> Config:
         mailgun_domain = section.get("mailgun_domain")
         mailgun_from = section.get("mailgun_from")
         email_recipient = section.get("email_recipient")
+        sms_user = section.get("sms_user")
+        sms_key = section.get("sms_key")
     except KeyError as e:
         return handle_config_file_error(config_file, e)
 
@@ -121,6 +135,8 @@ def get_config(account: str) -> Config:
         mailgun_domain,
         mailgun_from,
         email_recipient,
+        sms_user,
+        sms_key,
     )
 
 

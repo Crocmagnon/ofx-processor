@@ -80,7 +80,7 @@ class LclProcessor(OfxBaseProcessor):
         return ofx
 
 
-def main(filename, keep, download, send):
+def main(filename, keep, download, send_method):
     """Import LCL bank statement (OFX file)."""
     if download:
         if filename:
@@ -91,6 +91,6 @@ def main(filename, keep, download, send):
             )
         filename = LclDownloader().download()
     processor = LclProcessor(filename)
-    if send:
-        processor.send_reconciled_amount()
+    if send_method:
+        processor.send_reconciled_amount(send_method)
     processor.push_to_ynab(keep)

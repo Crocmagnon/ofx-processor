@@ -14,12 +14,15 @@ ARG_TO_OPTION = {
         default=False,
         show_default=True,
     ),
-    "send": click.option(
-        "send",
-        "--send/--no-send",
-        "--send-email/--no-send-email",
-        help="Send the reconciled amount via email.",
-        default=False,
+    "send_method": click.option(
+        "send_method",
+        "-s",
+        "--send",
+        help=(
+            "Send the reconciled amount via the chosen method. "
+            "Accepted methods: sms, email"
+        ),
+        default="",
         show_default=True,
     ),
     "download": click.option(
