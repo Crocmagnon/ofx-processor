@@ -42,3 +42,14 @@ The file passed in parameter will be deleted unless specified (`--keep` option o
 ## Versions
 
 This project follows [Semantic Versioning](https://semver.org/).
+
+## Development
+### Release
+```shell
+inv full-test
+poetry version <major/minor/patch>
+git add .
+git commit
+inv tag <version>
+inv publish publish-docker
+```
