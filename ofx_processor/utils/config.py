@@ -15,6 +15,10 @@ def get_default_config():
     default_config["DEFAULT"] = {
         "token": "<YOUR API TOKEN>",
         "budget": "<YOUR BUDGET ID>",
+        "mailgun_api_key": "",
+        "mailgun_domain": "",
+        "mailgun_from": "",
+        "email_recipient": "",
     }
     default_config["bpvf"] = {"account": "<YOUR ACCOUNT ID>"}
     default_config["revolut"] = {"account": "<YOUR ACCOUNT ID>"}
@@ -57,6 +61,22 @@ class Config:
     token: str
     bank_identifier: Optional[str] = None
     bank_password: Optional[str] = None
+    mailgun_api_key: Optional[str] = None
+    mailgun_domain: Optional[str] = None
+    mailgun_from: Optional[str] = None
+    email_recipient: Optional[str] = None
+
+    @property
+    def email_setup(self) -> bool:
+        """Return true if all fields are setup for email."""
+        return all(
+            [
+                self.mailgun_from,
+                self.mailgun_domain,
+                self.mailgun_api_key,
+                self.email_recipient,
+            ]
+        )
 
 
 def get_config(account: str) -> Config:
@@ -84,10 +104,24 @@ def get_config(account: str) -> Config:
         account = section["account"]
         bank_identifier = section.get("bank_identifier")
         bank_password = section.get("bank_password")
+        mailgun_api_key = section.get("mailgun_api_key")
+        mailgun_domain = section.get("mailgun_domain")
+        mailgun_from = section.get("mailgun_from")
+        email_recipient = section.get("email_recipient")
     except KeyError as e:
         return handle_config_file_error(config_file, e)
 
-    return Config(account, budget_id, token, bank_identifier, bank_password)
+    return Config(
+        account,
+        budget_id,
+        token,
+        bank_identifier,
+        bank_password,
+        mailgun_api_key,
+        mailgun_domain,
+        mailgun_from,
+        email_recipient,
+    )
 
 
 def handle_config_file_error(config_file, e):

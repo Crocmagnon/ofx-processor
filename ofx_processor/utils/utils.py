@@ -14,6 +14,14 @@ ARG_TO_OPTION = {
         default=False,
         show_default=True,
     ),
+    "send": click.option(
+        "send",
+        "--send/--no-send",
+        "--send-email/--no-send-email",
+        help="Send the reconciled amount via email.",
+        default=False,
+        show_default=True,
+    ),
     "download": click.option(
         "--download/--no-download",
         help="Download the file automatically.",
@@ -75,7 +83,7 @@ def discover_processors(cli: click.Group):
 
 class OrderedGroup(click.Group):
     def __init__(self, name=None, commands=None, **attrs):
-        super(OrderedGroup, self).__init__(name, commands, **attrs)
+        super().__init__(name, commands, **attrs)
         #: the registered subcommands by their exported names.
         self.commands = commands or collections.OrderedDict()
 

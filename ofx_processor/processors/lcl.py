@@ -57,12 +57,12 @@ class LclProcessor(OfxBaseProcessor):
     account_name = "lcl"
     command_name = "lcl"
 
-    def parse_file(self):
+    def _parse_file(self):
         # The first line of this file needs to be removed.
         # It contains something that is not part of the header of an OFX file.
         try:
             with open(self.filename, "r") as user_file:
-                data = user_file.read().splitlines(True)
+                data = user_file.read().splitlines(keepends=True)
         except FileNotFoundError:
             click.secho("Couldn't find ofx file", fg="red")
             sys.exit(1)
@@ -71,16 +71,16 @@ class LclProcessor(OfxBaseProcessor):
             with open(self.filename, "w") as temp_file:
                 temp_file.writelines(data[1:])
 
-        transactions = super(LclProcessor, self).parse_file()
+        ofx = super()._parse_file()
 
         if "Content-Type:" in data[0]:
             with open(self.filename, "w") as temp_file:
                 temp_file.writelines(data)
 
-        return transactions
+        return ofx
 
 
-def main(filename, keep, download):
+def main(filename, keep, download, send):
     """Import LCL bank statement (OFX file)."""
     if download:
         if filename:
@@ -90,4 +90,7 @@ def main(filename, keep, download):
                 fg="yellow",
             )
         filename = LclDownloader().download()
-    LclProcessor(filename).push_to_ynab(keep)
+    processor = LclProcessor(filename)
+    if send:
+        processor.send_reconciled_amount()
+    processor.push_to_ynab(keep)
