@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ofx-processor"
-version = "4.0.0"
+version = "4.0.1"
 description = "Personal ofx processor"
 readme = "README.md"
 license = "Unlicense"
@@ -16,7 +16,7 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
-    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "License :: OSI Approved :: The Unlicense (Unlicense)",
     "Natural Language :: English",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: Microsoft :: Windows",
