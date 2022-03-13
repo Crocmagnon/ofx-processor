@@ -42,9 +42,9 @@ def publish(ctx):
 @task
 def publish_docker(ctx):
     with ctx.cd(BASE_DIR):
-        docker_image = "rg.fr-par.scw.cloud/crocmagnon/ynab"
+        docker_image = "crocmagnon/ynab"
         ctx.run(
-            f"docker build --build-arg OFX_VERSION=$(poetry version -s) -t {docker_image} .",
+            f"docker build --platform linux/amd64 --build-arg OFX_VERSION=$(poetry version -s) -t {docker_image} .",
             pty=True,
             echo=True,
         )
