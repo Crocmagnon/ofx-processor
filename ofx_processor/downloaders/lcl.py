@@ -31,7 +31,7 @@ class LclDownloader:
             "browser.helperApps.neverAsk.saveToDisk", "application/x-ofx"
         )
         self.selenium = webdriver.Firefox(options=options)
-        self.selenium.implicitly_wait(10)
+        self.selenium.implicitly_wait(30)
 
     def download(self) -> str:
         selenium = self.selenium
