@@ -44,7 +44,7 @@ def publish_docker(ctx):
     with ctx.cd(BASE_DIR):
         docker_image = "crocmagnon/ynab"
         ctx.run(
-            f"docker build --platform linux/amd64 --build-arg OFX_VERSION=$(poetry version -s) -t {docker_image} .",
+            f"docker build --pull --platform linux/amd64 --build-arg OFX_VERSION=$(poetry version -s) -t {docker_image} .",
             pty=True,
             echo=True,
         )
