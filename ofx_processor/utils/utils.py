@@ -38,6 +38,13 @@ ARG_TO_OPTION = {
         default="",
         show_default=True,
     ),
+    "push_to_ynab": click.option(
+        "push_to_ynab",
+        "--push/--no-push",
+        help="Push the data to YNAB.",
+        default=True,
+        show_default=True,
+    ),
 }
 
 
