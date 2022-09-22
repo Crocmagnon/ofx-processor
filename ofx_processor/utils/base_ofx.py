@@ -44,6 +44,8 @@ class OfxBaseProcessor(BaseProcessor):
             self._send_sms(amount)
         elif method == "telegram":
             self._send_telegram(amount)
+        else:
+            click.secho(f"Method not implemented: {method}.", fg="red", bold=True)
 
     def _get_reconciled_amount(self) -> Decimal:
         ofx = self._parse_file()
