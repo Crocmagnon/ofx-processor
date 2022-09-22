@@ -1,3 +1,4 @@
+import asyncio
 import configparser
 import os
 import sys
@@ -5,6 +6,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 import click
+import telegram
 
 DEFAULT_CONFIG_DIR = click.get_app_dir("ofx_processor")
 DEFAULT_CONFIG_FILENAME = "config.ini"
@@ -52,6 +54,21 @@ def edit_config():
 def show_file_name():
     config_file = get_config_file_name()
     click.echo(config_file)
+
+
+@config.command("telegram", help="Display the bot's chat ID.")
+def print_telegram_chat_id():
+    config = get_config("DEFAULT")
+    click.pause("Please start a conversation with your bot, then press any key...")
+    asyncio.run(print_chat_id(config))
+
+
+async def print_chat_id(config: "Config"):
+    bot = telegram.Bot(config.telegram_bot_token)
+    async with bot:
+        update = (await bot.get_updates())[-1]
+        chat_id = update.message.chat_id
+        click.secho(f"Your chat ID is: {chat_id}", fg="green", bold=True)
 
 
 @dataclass(frozen=True)
@@ -125,7 +142,10 @@ def get_config(account: str) -> Config:
         section = config[account]
         budget_id = section["budget"]
         token = section["token"]
-        account = section["account"]
+        if account == "DEFAULT":
+            ynab_account_id = ""
+        else:
+            ynab_account_id = section["account"]
         bank_identifier = section.get("bank_identifier")
         bank_password = section.get("bank_password")
         mailgun_api_key = section.get("mailgun_api_key")
@@ -140,7 +160,7 @@ def get_config(account: str) -> Config:
         return handle_config_file_error(config_file, e)
 
     return Config(
-        account,
+        ynab_account_id,
         budget_id,
         token,
         bank_identifier,
