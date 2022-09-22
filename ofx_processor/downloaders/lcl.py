@@ -3,6 +3,7 @@ from pathlib import Path
 
 import click
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
@@ -40,10 +41,10 @@ class LclDownloader:
         selenium.get("https://monespace.lcl.fr/connexion")
         try:
             self._click(By.ID, "popin_tc_privacy_button_2")
-        except:
-            # If the user has already accepted the privacy policy,
-            # the button is not present
-            pass
+            click.secho("Accepting privacy policy...")
+        except NoSuchElementException:
+            click.secho("Privacy policy already accepted")
+
         login_input = selenium.find_element(By.ID, "identifier")
         login_input.send_keys(self.config.bank_identifier)
         self._click(By.CLASS_NAME, "app-cta-button")
@@ -51,6 +52,12 @@ class LclDownloader:
             self._click(By.CSS_SELECTOR, f".pad-button[value='{char}']")
         self._click(By.CLASS_NAME, "app-cta-button")
         click.secho("Logged in!", fg="green")
+
+        try:
+            self._click(By.CSS_SELECTOR, ".menu-link.to-legacy")
+            click.secho("Going back to legacy version...")
+        except NoSuchElementException:
+            click.secho("Already on legacy version.")
 
         click.secho("Navigating through archives...", fg="blue")
         self._click(By.ID, "linkSynthese")
