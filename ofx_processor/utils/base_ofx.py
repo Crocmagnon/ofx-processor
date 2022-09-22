@@ -1,8 +1,10 @@
+import asyncio
 import sys
 from decimal import Decimal
 
 import click
 import requests
+import telegram
 from ofxtools import OFXTree
 from ofxtools.header import OFXHeaderError
 from ofxtools.models import Aggregate
@@ -40,6 +42,8 @@ class OfxBaseProcessor(BaseProcessor):
             self._send_mail(amount)
         elif method == "sms":
             self._send_sms(amount)
+        elif method == "telegram":
+            self._send_telegram(amount)
 
     def _get_reconciled_amount(self) -> Decimal:
         ofx = self._parse_file()
@@ -88,3 +92,20 @@ class OfxBaseProcessor(BaseProcessor):
         )
         if res.status_code >= 400:
             click.secho("Error while sending SMS", fg="yellow")
+
+    def _send_telegram(self, amount: Decimal):
+        config = get_config(self.account_name)
+        if not config.telegram_setup:
+            click.secho("Telegram is not properly setup", fg="yellow")
+            return
+
+        try:
+            asyncio.run(_send_telegram_message(config.telegram_bot_token, config.telegram_bot_chat_id, f"Reconciled balance: {amount}"))
+        except Exception as e:
+            click.secho(f"Error while sending Telegram message. {type(e).__name__}: {e}", fg="yellow")
+
+
+async def _send_telegram_message(bot_token: str, chat_id: str, message: str) -> None:
+    bot = telegram.Bot(bot_token)
+    async with bot:
+        await bot.send_message(chat_id=chat_id, text=message)

@@ -34,6 +34,7 @@ click = "^8.0.3"
 dateparser = "^1.1.0"
 requests = "^2.24.0"
 selenium = "^4.0.0"
+python-telegram-bot = {version = "^20.0a4", allow-prereleases = true}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0.1"

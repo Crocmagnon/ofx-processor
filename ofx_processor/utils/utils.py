@@ -20,7 +20,7 @@ ARG_TO_OPTION = {
         "--send",
         help=(
             "Send the reconciled amount via the chosen method. "
-            "Accepted methods: sms, email"
+            "Accepted methods: sms, email, telegram"
         ),
         default="",
         show_default=True,

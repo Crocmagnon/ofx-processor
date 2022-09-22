@@ -67,6 +67,8 @@ class Config:
     email_recipient: Optional[str] = None
     sms_user: Optional[str] = None
     sms_key: Optional[str] = None
+    telegram_bot_token: Optional[str] = None
+    telegram_bot_chat_id: Optional[str] = None
 
     @property
     def email_setup(self) -> bool:
@@ -87,6 +89,16 @@ class Config:
             [
                 self.sms_user,
                 self.sms_key,
+            ]
+        )
+
+    @property
+    def telegram_setup(self) -> bool:
+        """Return true if all fields are setup for telegram."""
+        return all(
+            [
+                self.telegram_bot_token,
+                self.telegram_bot_chat_id,
             ]
         )
 
@@ -122,6 +134,8 @@ def get_config(account: str) -> Config:
         email_recipient = section.get("email_recipient")
         sms_user = section.get("sms_user")
         sms_key = section.get("sms_key")
+        telegram_bot_token = section.get("telegram_bot_token")
+        telegram_bot_chat_id = section.get("telegram_bot_chat_id")
     except KeyError as e:
         return handle_config_file_error(config_file, e)
 
@@ -137,6 +151,8 @@ def get_config(account: str) -> Config:
         email_recipient,
         sms_user,
         sms_key,
+        telegram_bot_token,
+        telegram_bot_chat_id,
     )
 
 
