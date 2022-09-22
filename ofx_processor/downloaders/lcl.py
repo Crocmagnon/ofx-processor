@@ -41,9 +41,9 @@ class LclDownloader:
         selenium.get("https://monespace.lcl.fr/connexion")
         try:
             self._click(By.ID, "popin_tc_privacy_button_2")
-            click.secho("Accepting privacy policy...")
+            click.secho("Accepting privacy policy...", fg="blue")
         except NoSuchElementException:
-            click.secho("Privacy policy already accepted")
+            click.secho("Privacy policy already accepted", fg="blue")
 
         login_input = selenium.find_element(By.ID, "identifier")
         login_input.send_keys(self.config.bank_identifier)
@@ -54,10 +54,11 @@ class LclDownloader:
         click.secho("Logged in!", fg="green")
 
         try:
+            self._click(By.CSS_SELECTOR, "nav.menu-legacy button")
             self._click(By.CSS_SELECTOR, ".menu-link.to-legacy")
-            click.secho("Going back to legacy version...")
+            click.secho("Going back to legacy version...", fg="blue")
         except NoSuchElementException:
-            click.secho("Already on legacy version.")
+            click.secho("Already on legacy version.", fg="blue")
 
         click.secho("Navigating through archives...", fg="blue")
         self._click(By.ID, "linkSynthese")
