@@ -6,6 +6,7 @@ import pkgutil
 import click
 
 from ofx_processor import processors
+from ofx_processor.senders import SENDERS
 
 ARG_TO_OPTION = {
     "keep": click.option(
@@ -19,10 +20,9 @@ ARG_TO_OPTION = {
         "-s",
         "--send",
         help=(
-            "Send the reconciled amount via the chosen method. "
-            "Accepted methods: sms, email, telegram"
+            "Send the reconciled amount via the chosen method."
         ),
-        default="",
+        type=click.Choice(list(SENDERS.keys()), case_sensitive=False),
         show_default=True,
     ),
     "download": click.option(

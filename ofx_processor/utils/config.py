@@ -86,6 +86,7 @@ class Config:
     sms_key: Optional[str] = None
     telegram_bot_token: Optional[str] = None
     telegram_bot_chat_id: Optional[str] = None
+    home_assistant_webhook_url: Optional[str] = None
 
     @property
     def email_setup(self) -> bool:
@@ -116,6 +117,15 @@ class Config:
             [
                 self.telegram_bot_token,
                 self.telegram_bot_chat_id,
+            ]
+        )
+
+    @property
+    def home_assistant_setup(self):
+        """Return true if all fields are setup for home assistant."""
+        return all(
+            [
+                self.home_assistant_webhook_url,
             ]
         )
 
@@ -156,6 +166,7 @@ def get_config(account: str) -> Config:
         sms_key = section.get("sms_key")
         telegram_bot_token = section.get("telegram_bot_token")
         telegram_bot_chat_id = section.get("telegram_bot_chat_id")
+        home_assistant_webhook_url = section.get("home_assistant_webhook_url")
     except KeyError as e:
         return handle_config_file_error(config_file, e)
 
@@ -173,6 +184,7 @@ def get_config(account: str) -> Config:
         sms_key,
         telegram_bot_token,
         telegram_bot_chat_id,
+        home_assistant_webhook_url,
     )
 
 
