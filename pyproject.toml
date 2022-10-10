@@ -29,20 +29,20 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4"
-ofxtools = "^0.9.4"
-click = "^8.0.3"
-dateparser = "^1.1.0"
-requests = "^2.24.0"
-selenium = "^4.0.0"
-python-telegram-bot = {version = "^20.0a4", allow-prereleases = true}
+ofxtools = ">=0.9.4"
+click = ">=8.0.3"
+dateparser = ">=1.1.0"
+requests = ">=2.24.0"
+selenium = ">=4.0.0"
+python-telegram-bot = {version = ">=20.0a4", allow-prereleases = true}
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.0.1"
-pytest-cov = "^3.0.0"
-invoke = "^1.6.0"
-pre-commit = "^2.15.0"
-tox = "^3.24.4"
-pdbpp = "^0.10.3"
+pytest = ">=6.0.1"
+pytest-cov = ">=3.0.0"
+invoke = ">=1.6.0"
+pre-commit = ">=2.15.0"
+tox = ">=3.24.4"
+pdbpp = ">=0.10.3"
 
 [tool.poetry.scripts]
 ynab = 'ofx_processor.main:cli'
