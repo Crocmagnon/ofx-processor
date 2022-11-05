@@ -58,7 +58,7 @@ class LclDownloader:
             self._click(By.CSS_SELECTOR, ".return-legacy-button")
             click.secho("Going back to legacy version...", fg="blue")
         except NoSuchElementException:
-            click.secho("Already on legacy version.", fg="blue")
+            click.secho("Probably already on legacy version.", fg="blue")
 
         click.secho("Navigating through archives...", fg="blue")
         self._click(By.ID, "linkSynthese")
