@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ofx-processor"
-version = "4.3.0"
+version = "4.3.1"
 description = "Personal ofx processor"
 readme = "README.md"
 authors = ["Gabriel Augendre <gabriel@augendre.info>"]
