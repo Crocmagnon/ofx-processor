@@ -54,8 +54,8 @@ class LclDownloader:
         click.secho("Logged in!", fg="green")
 
         try:
-            self._click(By.CSS_SELECTOR, "nav.menu-legacy button")
-            self._click(By.CSS_SELECTOR, ".menu-link.to-legacy")
+            self._click(By.CSS_SELECTOR, ".burger-menu-content")
+            self._click(By.CSS_SELECTOR, ".return-legacy-button")
             click.secho("Going back to legacy version...", fg="blue")
         except NoSuchElementException:
             click.secho("Already on legacy version.", fg="blue")
