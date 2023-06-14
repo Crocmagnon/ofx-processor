@@ -228,3 +228,4 @@ dmypy.json
 
 .idea
 .vscode
+.direnv

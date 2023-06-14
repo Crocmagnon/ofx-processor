@@ -20,15 +20,14 @@ classifiers = [
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: Unix",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Utilities",
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4"
+python = ">=3.10,<4"
 ofxtools = ">=0.9.4"
 click = ">=8.0.3"
 dateparser = ">=1.1.0"
@@ -39,7 +38,7 @@ python-telegram-bot = {version = ">=20.0a4", allow-prereleases = true}
 [tool.poetry.dev-dependencies]
 pytest = ">=6.0.1"
 pytest-cov = ">=3.0.0"
-invoke = ">=1.6.0"
+invoke = ">=2.0.0"
 pre-commit = ">=2.15.0"
 tox = ">=3.24.4"
 pdbpp = ">=0.10.3"
@@ -57,12 +56,12 @@ profile = "black"
 legacy_tox_ini = """
 [tox]
 isolated_build = true
-envlist = py38, py39, py310
+envlist = py310, py311
 
 [testenv]
-whitelist_externals = poetry
+allowlist_externals = poetry
 commands =
-    poetry install --remove-untracked
+    poetry install --sync
     poetry run inv test
 """
 
