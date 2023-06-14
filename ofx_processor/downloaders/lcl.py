@@ -56,7 +56,7 @@ class LclDownloader:
         try:
             self._click(By.CSS_SELECTOR, ".app-cta-button--primary")
             click.secho("Dismissing welcome screen...", fg="blue")
-            sleep(2)
+            time.sleep(2)
         except NoSuchElementException:
             click.secho("No welcome screen found.", fg="blue")
 
