@@ -54,6 +54,12 @@ class LclDownloader:
         click.secho("Logged in!", fg="green")
 
         try:
+            self._click(By.CSS_SELECTOR, ".app-cta-button--primary")
+            click.secho("Dismissing welcome screen...", fg="blue")
+        except NoSuchElementException:
+            click.secho("No welcome screen found.", fg="blue")
+
+        try:
             self._click(By.CSS_SELECTOR, ".burger-menu-content")
             self._click(By.CSS_SELECTOR, ".return-legacy-button")
             click.secho("Going back to legacy version...", fg="blue")
