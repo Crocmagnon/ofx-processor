@@ -1,3 +1,4 @@
+import os
 import time
 from pathlib import Path
 
@@ -35,6 +36,14 @@ class LclDownloader:
         self.selenium.implicitly_wait(30)
 
     def download(self) -> str:
+        try:
+            return self._download()
+        except Exception:
+            screenshot = Path(os.getenv("SCREENSHOT_DIR", default="/tmp")) / "error_download.png"
+            self.selenium.save_screenshot(screenshot)
+            raise
+
+    def _download(self) -> str:
         selenium = self.selenium
 
         click.secho("Logging in to LCL...", fg="blue")
