@@ -39,7 +39,7 @@ class LclDownloader:
         try:
             return self._download()
         except Exception:
-            screenshot = Path(os.getenv("SCREENSHOT_DIR", default="/tmp")) / "error_download.png"
+            screenshot = Path(self.config.screenshot_dir) / "error_download_lcl.png"
             self.selenium.save_screenshot(screenshot)
             raise
 

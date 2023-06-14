@@ -17,6 +17,7 @@ def get_default_config():
     default_config["DEFAULT"] = {
         "token": "<YOUR API TOKEN>",
         "budget": "<YOUR BUDGET ID>",
+        "screenshot_dir": "/tmp",
         "mailgun_api_key": "",
         "mailgun_domain": "",
         "mailgun_from": "",
@@ -76,6 +77,7 @@ class Config:
     account: str
     budget_id: str
     token: str
+    screenshot_dir: str
     bank_identifier: Optional[str] = None
     bank_password: Optional[str] = None
     mailgun_api_key: Optional[str] = None
@@ -152,6 +154,7 @@ def get_config(account: str) -> Config:
         section = config[account]
         budget_id = section["budget"]
         token = section["token"]
+        screenshot_dir = section.get("screenshot_dir")
         if account == "DEFAULT":
             ynab_account_id = ""
         else:
@@ -174,6 +177,7 @@ def get_config(account: str) -> Config:
         ynab_account_id,
         budget_id,
         token,
+        screenshot_dir,
         bank_identifier,
         bank_password,
         mailgun_api_key,
