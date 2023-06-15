@@ -62,6 +62,7 @@ class LclDownloader:
         self._click(By.CLASS_NAME, "app-cta-button")
         click.secho("Logged in!", fg="green")
 
+        time.sleep(2)
         try:
             self._click(By.CSS_SELECTOR, ".app-cta-button--primary")
             click.secho("Dismissing welcome screen...", fg="blue")
