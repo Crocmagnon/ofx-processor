@@ -7,9 +7,9 @@ RUN wget -q https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVE
     && tar xvf $GECKODRIVER_FILENAME  \
     && rm $GECKODRIVER_FILENAME
 
-FROM python:3.11-slim-bullseye as final
+FROM python:3.11-slim-bookworm as final
 RUN apt-get update && apt-get install -y firefox-esr
 COPY --from=downloader /app/geckodriver /usr/local/bin/geckodriver
 ARG OFX_VERSION
-RUN pip install ofx-processor==$OFX_VERSION
+RUN pip --disable-pip-version-check install ofx-processor==$OFX_VERSION
 CMD ["ynab", "lcl", "--download"]
