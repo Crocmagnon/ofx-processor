@@ -1,4 +1,4 @@
-import os
+import datetime
 import time
 from pathlib import Path
 
@@ -27,7 +27,7 @@ class LclDownloader:
             download_folder = Path.home() / "Downloads"
         self.download_folder = download_folder.resolve()
         options = webdriver.FirefoxOptions()
-        options.headless = True
+        options.add_argument("-headless")
         options.set_preference("browser.download.dir", str(self.download_folder))
         options.set_preference(
             "browser.helperApps.neverAsk.saveToDisk", "application/x-ofx"
@@ -72,20 +72,19 @@ class LclDownloader:
                 click.secho("No welcome screen found.", fg="blue")
                 retry = False
 
-        try:
-            self._click(By.CSS_SELECTOR, ".burger-menu-content")
-            self._click(By.CSS_SELECTOR, ".return-legacy-button")
-            click.secho("Going back to legacy version...", fg="blue")
-        except NoSuchElementException:
-            click.secho("Probably already on legacy version.", fg="blue")
+        self._click(By.CLASS_NAME, "extended-zone")
+        self._click(By.ID, "export-button")
 
-        click.secho("Navigating through archives...", fg="blue")
-        self._click(By.ID, "linkSynthese")
-        self._click(By.CLASS_NAME, "picDl")
-        self._select(By.ID, "change", index=1)
-        self._select(By.ID, "DS", index=20)
-        self._click(By.ID, "MON04")
-        self._click(By.ID, "Valider")
+        end = datetime.date.today() - datetime.timedelta(days=1)
+        start = end - datetime.timedelta(days=9)
+
+        self._type_nth(By.CSS_SELECTOR, "input.range-picker-input", 0, start.strftime("%d/%m/%Y"))
+        self._type_nth(By.CSS_SELECTOR, "input.range-picker-input", 1, end.strftime("%d/%m/%Y"))
+
+        self._click(By.CSS_SELECTOR, "ui-desktop-select button")
+        self._click_nth(By.CSS_SELECTOR, "ui-select-list ul li", 2)
+
+        self._click(By.CLASS_NAME, "download-button")
         click.secho("Found it!", fg="green")
         selenium.get("about:downloads")
         return self._get_last_download_file_name()
@@ -93,8 +92,14 @@ class LclDownloader:
     def _click(self, by: By, value: str):
         self.selenium.find_element(by, value).click()
 
+    def _click_nth(self, by: By, value: str, idx: int):
+        self.selenium.find_elements(by, value)[idx].click()
+
     def _select(self, by: By, value: str, index: int):
         Select(self.selenium.find_element(by, value)).select_by_index(index)
+
+    def _type_nth(self, by: By, value: str, idx: int, value_to_type: str):
+        self.selenium.find_elements(by, value)[idx].send_keys(value_to_type)
 
     def _get_last_download_file_name(self, wait_seconds: int = 30):
         end_time = time.time() + wait_seconds
