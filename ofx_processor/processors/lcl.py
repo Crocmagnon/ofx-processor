@@ -1,5 +1,6 @@
 import sys
 from datetime import datetime
+from operator import truediv
 
 import click
 import dateparser
@@ -67,17 +68,25 @@ class LclProcessor(OfxBaseProcessor):
             click.secho("Couldn't find ofx file", fg="red")
             sys.exit(1)
 
-        if "Content-Type:" in data[0]:
-            with open(self.filename, "w") as temp_file:
-                temp_file.writelines(data[1:])
+        new_lines = [line for line in data if is_valid_line(line)]
+
+        with open(self.filename, "w") as temp_file:
+            temp_file.writelines(new_lines)
 
         ofx = super()._parse_file()
 
-        if "Content-Type:" in data[0]:
-            with open(self.filename, "w") as temp_file:
-                temp_file.writelines(data)
+        with open(self.filename, "w") as temp_file:
+            temp_file.writelines(data)
 
         return ofx
+
+
+def is_valid_line(line):
+    if "Content-Type:" in line:
+        return False
+    if "MKTGINFO" in line:
+        return False
+    return True
 
 
 def main(filename, keep, download, send_method, push_to_ynab):
@@ -91,6 +100,7 @@ def main(filename, keep, download, send_method, push_to_ynab):
             )
         filename = LclDownloader().download()
     processor = LclProcessor(filename)
+    processor.parse_file()
     if send_method:
         processor.send_reconciled_amount(send_method)
     if push_to_ynab:
