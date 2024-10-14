@@ -1,7 +1,7 @@
 FROM debian:bookworm AS downloader
 WORKDIR /app
 RUN apt-get update && apt-get install -y wget
-ARG GECKODRIVER_VERSION="v0.33.0"
+ARG GECKODRIVER_VERSION="v0.35.0"
 ARG GECKODRIVER_FILENAME="geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz"
 RUN wget -q https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/$GECKODRIVER_FILENAME \
     && tar xvf $GECKODRIVER_FILENAME  \

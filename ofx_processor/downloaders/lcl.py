@@ -34,6 +34,7 @@ class LclDownloader:
         )
         self.selenium = webdriver.Firefox(options=options)
         self.selenium.implicitly_wait(30)
+        self.selenium.set_window_size(1280, 4000)
 
     def download(self) -> str:
         try:
@@ -86,6 +87,7 @@ class LclDownloader:
 
         self._click(By.CLASS_NAME, "download-button")
         click.secho("Found it!", fg="green")
+        time.sleep(5)
         selenium.get("about:downloads")
         return self._get_last_download_file_name()
 
