@@ -50,7 +50,7 @@ inv full-test
 poetry version <major/minor/patch>
 git add .
 git commit
-inv tag <version>
+inv tag $(poetry version -s)
 inv publish publish-docker
 ```
 
