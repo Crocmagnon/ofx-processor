@@ -5,6 +5,7 @@ from pathlib import Path
 import click
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
@@ -27,7 +28,7 @@ class LclDownloader:
             download_folder = Path.home() / "Downloads"
         self.download_folder = download_folder.resolve()
         options = webdriver.FirefoxOptions()
-        options.add_argument("-headless")
+        # options.add_argument("-headless")
         options.set_preference("browser.download.dir", str(self.download_folder))
         options.set_preference(
             "browser.helperApps.neverAsk.saveToDisk", "application/x-ofx"
@@ -63,7 +64,7 @@ class LclDownloader:
         self._click(By.CLASS_NAME, "app-cta-button")
         click.secho("Logged in!", fg="green")
 
-        retry = True
+        retry = False
         while retry:
             try:
                 self._click(By.CSS_SELECTOR, ".app-cta-button--primary")
@@ -77,10 +78,10 @@ class LclDownloader:
         self._click(By.ID, "export-button")
 
         end = datetime.date.today() - datetime.timedelta(days=1)
-        start = end - datetime.timedelta(days=9)
+        start = end - datetime.timedelta(days=30)
 
-        self._type_nth(By.ID, "mat-input-0", 0, start.strftime("%d/%m/%Y"))
-        self._type_nth(By.ID, "mat-input-1", 0, end.strftime("%d/%m/%Y"))
+        self._type_date(By.ID, "mat-input-0", start)
+        self._type_date(By.ID, "mat-input-1", end)
 
         self._click(By.CSS_SELECTOR, "ui-desktop-select button")
         self._click_nth(By.CSS_SELECTOR, "ui-select-list ul li", 2)
@@ -100,8 +101,21 @@ class LclDownloader:
     def _select(self, by: By, value: str, index: int):
         Select(self.selenium.find_element(by, value)).select_by_index(index)
 
-    def _type_nth(self, by: By, value: str, idx: int, value_to_type: str):
-        self.selenium.find_elements(by, value)[idx].send_keys(value_to_type)
+    def _type(self, by: By, value: str, value_to_type: str):
+        self.selenium.find_element(by, value).send_keys(value_to_type)
+
+    def _clear(self, by: By, value: str):
+        self.selenium.find_element(by, value).clear()
+
+    def _type_date(self, by: By, value: str, _date: datetime.date):
+        # The new version of the form doesn't behave nicely when typing the date.
+        self._type(by, value, "1")
+        self._type(by, value, Keys.ARROW_LEFT*5)
+        self._type(by, value, Keys.BACKSPACE*5)
+        self._type(by, value, _date.strftime("%d/%m"))
+        self._type(by, value, Keys.ARROW_RIGHT*5)
+        self._type(by, value, Keys.BACKSPACE*4)
+        self._type(by, value, _date.strftime("%Y"))
 
     def _get_last_download_file_name(self, wait_seconds: int = 30):
         end_time = time.time() + wait_seconds
