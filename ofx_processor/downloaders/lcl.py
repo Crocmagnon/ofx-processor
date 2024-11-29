@@ -28,7 +28,7 @@ class LclDownloader:
             download_folder = Path.home() / "Downloads"
         self.download_folder = download_folder.resolve()
         options = webdriver.FirefoxOptions()
-        # options.add_argument("-headless")
+        options.add_argument("-headless")
         options.set_preference("browser.download.dir", str(self.download_folder))
         options.set_preference(
             "browser.helperApps.neverAsk.saveToDisk", "application/x-ofx"
@@ -64,7 +64,7 @@ class LclDownloader:
         self._click(By.CLASS_NAME, "app-cta-button")
         click.secho("Logged in!", fg="green")
 
-        retry = False
+        retry = True
         while retry:
             try:
                 self._click(By.CSS_SELECTOR, ".app-cta-button--primary")
