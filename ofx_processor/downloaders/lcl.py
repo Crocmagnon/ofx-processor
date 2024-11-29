@@ -79,8 +79,8 @@ class LclDownloader:
         end = datetime.date.today() - datetime.timedelta(days=1)
         start = end - datetime.timedelta(days=9)
 
-        self._type_nth(By.CSS_SELECTOR, "input.range-picker-input", 0, start.strftime("%d/%m/%Y"))
-        self._type_nth(By.CSS_SELECTOR, "input.range-picker-input", 1, end.strftime("%d/%m/%Y"))
+        self._type_nth(By.ID, "mat-input-0", 0, start.strftime("%d/%m/%Y"))
+        self._type_nth(By.ID, "mat-input-1", 0, end.strftime("%d/%m/%Y"))
 
         self._click(By.CSS_SELECTOR, "ui-desktop-select button")
         self._click_nth(By.CSS_SELECTOR, "ui-select-list ul li", 2)
